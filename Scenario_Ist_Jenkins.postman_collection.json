@@ -1,0 +1,5943 @@
+{
+	"info": {
+		"_postman_id": "de7dbbf3-1459-4148-a18b-a93c5c2860a2",
+		"name": "Scenario_Ist_Jenkins",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36365004"
+	},
+	"item": [
+		{
+			"name": "LoginRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Parse the response body\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Check if the response is an array and has at least two elements\r",
+							"if (Array.isArray(response) && response.length > 1) {\r",
+							"    // Extract the tokens from the objects in the array\r",
+							"    let token1 = response[0].Token;\r",
+							"    let token2 = response[1].Token;\r",
+							"    let loggedInTime = response[1].LoggedInTime;\r",
+							"    let userId = response[0].UserId;\r",
+							"\r",
+							"    // Log the tokens to verify they are being extracted correctly\r",
+							"    console.log(\"Extracted token1:\", token1);\r",
+							"    console.log(\"Extracted token2:\", token2);\r",
+							"    console.log(\"LoggedInTime:\", loggedInTime);\r",
+							"    console.log(\"UserId: \", userId);\r",
+							"\r",
+							"    // Set the tokens as global variables\r",
+							"    pm.collectionVariables.set(\"cl_AuthToken1\", token1);\r",
+							"    pm.collectionVariables.set(\"cl_AuthToken2\", token2);\r",
+							"    pm.collectionVariables.set(\"cl_LoggedInTime\", loggedInTime);\r",
+							"    pm.collectionVariables.set(\"cl_UserId\", userId);\r",
+							"\r",
+							"} else {\r",
+							"    // Log an error if the response is not as expected\r",
+							"    console.error(\"Response format is incorrect or array does not have enough elements.\");\r",
+							"}\r",
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n[\r\n    {\r\n        \"IsImpersonate\": false,\r\n        \"RefreshTokenFor\": \"master\",\r\n        \"Username\": \"Staginguser_6\",\r\n        \"Password\": \"Paragon@2024\",\r\n        \"CaptureLoginTime\": \"1724229244081\"\r\n    },\r\n    {\r\n        \"IsImpersonate\": false,\r\n        \"RefreshTokenFor\": \"campaign\",\r\n        \"Username\": \"Staginguser_6\",\r\n        \"Password\": \"Paragon@2024\",\r\n        \"CaptureLoginTime\": \"1724229244081\"\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/MasterAPI/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"MasterAPI",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CampaignRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{cl_AuthToken2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					},
+					{
+						"key": "id",
+						"value": "{{cl_UserId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"CampaignItems\":[],\"ProofsEnabled\":false,\"CampaignId\":0,\"CampaignNumber\":\"new number\",\"BusinessUnitId\":1,\"BusinessUnitVATRegistrationMappingId\":12,\"CustomerEntityId\":4,\"CurrencyId\":8,\"BrandId\":null,\"SellOnCostCentreId\":null,\"CostCentreId\":null,\"ProductTypeId\":null,\"IsBlanketPO\":false,\"BlanketPOId\":null,\"AvailableBlanketPOValue\":null,\"SalesRepresentativeId\":1,\"AccountManagerId\":262,\"CustomerContactId\":null,\"CustomerId\":4,\"VATTypeId\":1,\"CampaignName\":\"PostmanTest_ClientDemo46\",\"DeliveryDate\":\"2024-08-19T18:30:00.000Z\",\"Status\":\"Active\",\"Active\":true,\"TrackingStatusId\":1,\"IsDistribution\":null,\"CampaignDeliveryDate\":\"08/30/2024\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/CampaignAPI/api/campaigns",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"CampaignAPI",
+						"api",
+						"campaigns"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CampaignRequest2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Parse the response body\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Check if the response contains a 'Data' array with at least one object\r",
+							"if (response.Data && response.Data.length > 0) {\r",
+							"    // Extract the CustomerGuid from the first object in the Data array\r",
+							"    let customerGuid = response.Data[0].CustomerGuid;\r",
+							"    \r",
+							"    // Extract the CampaignGuid from the first object in the Data array\r",
+							"    let campaignGuid = response.Data[0].CampaignGuid;\r",
+							"\r",
+							"    // Log the CustomerGuid and CampaignGuid to verify they are being extracted correctly\r",
+							"    console.log(\"Extracted CustomerGuid:\", customerGuid);\r",
+							"    console.log(\"Extracted CampaignGuid:\", campaignGuid);\r",
+							"\r",
+							"    // Set the CustomerGuid as a global variable\r",
+							"    if (customerGuid) {\r",
+							"        pm.collectionVariables.set(\"cl_CustomerGuid\", customerGuid);\r",
+							"    } else {\r",
+							"        console.error(\"CustomerGuid is null or undefined\");\r",
+							"    }\r",
+							"\r",
+							"    // Set the CampaignGuid as a global variable\r",
+							"    if (campaignGuid) {\r",
+							"        pm.collectionVariables.set(\"cl_CampaignGuid\", campaignGuid);\r",
+							"    } else {\r",
+							"        console.error(\"CampaignGuid is null or undefined\");\r",
+							"    }\r",
+							"\r",
+							"} else {\r",
+							"    // Log an error if the Data array is not present or is empty\r",
+							"    console.error(\"Response does not contain a valid Data array.\");\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{cl_AuthToken2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					},
+					{
+						"key": "id",
+						"value": "{{cl_UserId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"InvoiceList\": [],\r\n\"OrderReferenceList\": [],\r\n\"campaignIdList\": [],\r\n\"campaignItemIdList\": [],\r\n\"userBusinessUnitMapping\": [],\r\n\"BlanketPOId\": [],\r\n\"isExportEventTriggered\": false,\r\n\"exportColumnList\": [],\r\n\"exportType\": \"\",\r\n\"campaignNumber\": \"0\",\r\n\"campaignTitle\": \"0\",\r\n\"selloncostcentre\": \"0\",\r\n\"searchType\": 1,\r\n\"searchValue\": \"0\",\r\n\"DefaultCustomerList\": \"3,4,\",\r\n\"CustomersList\": \"0\",\r\n\"CustomerEntityList\": \"0\",\r\n\"AccountManagersList\": \"0\",\r\n\"StatusList\": \"0\",\r\n\"BusinessUnitsList\": \"0\",\r\n\"VatRegestrationList\": \"0\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/CampaignAPI/api/campaigns/1/25/CreatedOn/desc/false/na/na",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"CampaignAPI",
+						"api",
+						"campaigns",
+						"1",
+						"25",
+						"CreatedOn",
+						"desc",
+						"false",
+						"na",
+						"na"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ClickonCampaign",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Parse the JSON response body\r",
+							"let responseJson = pm.response.json();\r",
+							"\r",
+							"// Extract the required variables\r",
+							"let campaignName = responseJson.CampaignName;\r",
+							"let campaignNumber = responseJson.CampaignNumber;\r",
+							"let campaignId = responseJson.CampaignId;\r",
+							"\r",
+							"\r",
+							"pm.collectionVariables.set(\"cl_CampaignName\", campaignName);\r",
+							"pm.collectionVariables.set(\"cl_CampaignNumber\", campaignNumber);\r",
+							"pm.collectionVariables.set(\"cl_CampaignID\", campaignId);\r",
+							"\r",
+							"// Log the variables for debugging\r",
+							"console.log(\"CampaignName:\", campaignName);\r",
+							"console.log(\"CampaignNumber:\", campaignNumber);\r",
+							"console.log(\"CampaignId:\", campaignId);\r",
+							"\r",
+							"pm.test(\"Successful GET request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{cl_AuthToken2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					},
+					{
+						"key": "id",
+						"value": "{{cl_UserId}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/CampaignAPI/api/campaigns/{{cl_CampaignGuid}}/{{cl_CustomerGuid}}/Campaign",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"CampaignAPI",
+						"api",
+						"campaigns",
+						"{{cl_CampaignGuid}}",
+						"{{cl_CustomerGuid}}",
+						"Campaign"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreatePrefillItem",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{cl_AuthToken2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					},
+					{
+						"key": "id",
+						"value": "{{cl_UserId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"CampaignGuid\": \"{{cl_CampaignGuid}}\",\r\n    \"PrefilledTemplateCount\": [\r\n        {\r\n            \"ProductCategoryJsonSchemaMappingGuid\": \"3ce8f029-4768-4b64-96f2-87c9162806d6\",\r\n            \"Count\": \"1\",\r\n            \"Quantity\": \"111\"\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/CampaignAPI/api/campaignitems/CreatePrefilledCampaignItem",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"CampaignAPI",
+						"api",
+						"campaignitems",
+						"CreatePrefilledCampaignItem"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreatePrefillItem2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Parse the response body as JSON\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Check if 'Data' array exists and has at least one element\r",
+							"if (response && response.Data && response.Data.length > 0) {\r",
+							"    let item = response.Data[0];  // Extract the first item in the 'Data' array\r",
+							"\r",
+							"    // Ensure the item contains the required fields\r",
+							"    if (item.CampaignItemId && item.CampaignItemGuid && item.CampaignItemName && \r",
+							"        item.CampaignItemReference && item.ProductCategoryId && item.StockCode && item.TrackingItemId !== undefined) {\r",
+							"        \r",
+							"        // Extract the required fields\r",
+							"        let campaignItemId = item.CampaignItemId;\r",
+							"        let campaignItemGuid = item.CampaignItemGuid;\r",
+							"        let campaignItemName = item.CampaignItemName;\r",
+							"        let campaignItemReference = item.CampaignItemReference;\r",
+							"        let productCategoryId = item.ProductCategoryId;\r",
+							"        let stockCode = item.StockCode;\r",
+							"        let trackingItemId = item.TrackingItemId;\r",
+							"\r",
+							"        // Set these values as collection variables in Postman\r",
+							"        pm.collectionVariables.set(\"cl_CampaignItemID\", campaignItemId);\r",
+							"        pm.collectionVariables.set(\"cl_CampaignItemGuiD\", campaignItemGuid);\r",
+							"        pm.collectionVariables.set(\"cl_CampaignItemName\", campaignItemName);\r",
+							"        pm.collectionVariables.set(\"cl_CampaignItemReFerence\", campaignItemReference);\r",
+							"        pm.collectionVariables.set(\"cl_ProductCategoryId\", productCategoryId);\r",
+							"        pm.collectionVariables.set(\"cl_StockCode\", stockCode);\r",
+							"        pm.collectionVariables.set(\"cl_TrackingItemId\", trackingItemId);\r",
+							"\r",
+							"        // Log the variables to confirm they were set correctly\r",
+							"        console.log(\"CampaignItemId:\", campaignItemId);\r",
+							"        console.log(\"CampaignItemGuid:\", campaignItemGuid);\r",
+							"        console.log(\"CampaignItemName:\", campaignItemName);\r",
+							"        console.log(\"CampaignItemReference:\", campaignItemReference);\r",
+							"        console.log(\"ProductCategoryId:\", productCategoryId);\r",
+							"        console.log(\"StockCode:\", stockCode);\r",
+							"        console.log(\"TrackingItemId:\", trackingItemId);\r",
+							"    } else {\r",
+							"        console.error(\"Required fields are missing in the response.\");\r",
+							"    }\r",
+							"} else {\r",
+							"    console.error(\"Response format is not as expected or 'Data' array is empty.\");\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{cl_AuthToken2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					},
+					{
+						"key": "id",
+						"value": "{{cl_UserId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"InvoiceList\": [],\r\n    \"OrderReferenceList\": [],\r\n    \"campaignIdList\": [],\r\n    \"campaignItemIdList\": [],\r\n    \"userBusinessUnitMapping\": [],\r\n    \"BlanketPOId\": [],\r\n    \"isExportEventTriggered\": false,\r\n    \"exportColumnList\": [],\r\n    \"exportType\": \"\",\r\n    \"searchValue\": \"\",\r\n    \"totCheckedCI\": \"0\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/CampaignAPI/api/campaignitems/{{cl_CampaignID}}/{{cl_CustomerGuid}}/1/10/CampaignItemReference/asc",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"CampaignAPI",
+						"api",
+						"campaignitems",
+						"{{cl_CampaignID}}",
+						"{{cl_CustomerGuid}}",
+						"1",
+						"10",
+						"CampaignItemReference",
+						"asc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetByGuid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Get the JSON response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Function to recursively extract keys and values from the object\r",
+							"function extractKeysAndValues(obj, parentKey = '') {\r",
+							"    for (let key in obj) {\r",
+							"        if (obj.hasOwnProperty(key)) {\r",
+							"            let fullKey = parentKey ? `${parentKey}.${key}` : key;\r",
+							"            let value = obj[key];\r",
+							"            \r",
+							"            // Print the key and value to the console\r",
+							"            console.log(`${fullKey}: ${value}`);\r",
+							"            \r",
+							"            // Save the value to an environment variable for use in future requests\r",
+							"            pm.collectionVariables.set(fullKey, value);\r",
+							"            \r",
+							"            // If the value is an object, recursively call the function\r",
+							"            if (typeof value === 'object' && value !== null) {\r",
+							"                extractKeysAndValues(value, fullKey);\r",
+							"            }\r",
+							"        }\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"// Call the function with the response\r",
+							"extractKeysAndValues(response);\r",
+							"\r",
+							"pm.test(\"Successful GET request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{cl_AuthToken2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					},
+					{
+						"key": "id",
+						"value": "{{cl_UserId}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/CampaignAPI/api/campaignitems/{{cl_CampaignItemGuiD}}/{{cl_CustomerGuid}}/getByGuid",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"CampaignAPI",
+						"api",
+						"campaignitems",
+						"{{cl_CampaignItemGuiD}}",
+						"{{cl_CustomerGuid}}",
+						"getByGuid"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateIsFSC",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful PUT request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{cl_AuthToken2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					},
+					{
+						"key": "id",
+						"value": "{{cl_UserId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"CampaignItemId\": {{cl_CampaignItemID}},\r\n    \"CampaignItemGuid\": \"{{cl_CampaignItemGuiD}}\",\r\n    \"CampaignId\": {{cl_CampaignID}},\r\n    \"CampaignItemName\": \"{{cl_CampaignItemName}}\",\r\n    \"CampaignItemReference\": \"{{cl_CampaignItemReFerence}}\",\r\n    \"ProductCategoryId\": {{cl_ProductCategoryId}},\r\n    \"StockCode\": \"{{cl_StockCode}}\",\r\n    \"TrackingItemId\": {{cl_TrackingItemId}},\r\n    \"PurchaseOrderNumber\": null,\r\n    \"ParagonInvoiceNumber\": null,\r\n    \"SpecificationValue\": \"{\\\"Repro Origination\\\":{\\\"Repro Origination.A/WSuppliedAs\\\":\\\"{Key:'2',Value:'Print Ready PDF'}\\\",\\\"Repro Origination.Other Artwork Supplied\\\":null,\\\"Repro Origination.Proofing\\\":\\\"{Key:'2',Value:'Hard Copy Contract Proof'}\\\",\\\"Repro Origination.Proofing Info\\\":\\\"\\\",\\\"Repro Origination.Artwork Versions\\\":\\\"{Key:'2',Value:'No'}\\\",\\\"Repro Origination.Number of Versions\\\":null,\\\"Repro Origination.Item Description\\\":null,\\\"Repro Origination.Product Code\\\":null,\\\"Repro Origination.Quantity\\\":null,\\\"Repro Origination.Item Description 1\\\":null,\\\"Repro Origination.Product Code 1\\\":null,\\\"Repro Origination.Quantity 1\\\":null,\\\"Repro Origination.Item Description 2\\\":null,\\\"Repro Origination.Product Code 2\\\":null,\\\"Repro Origination.Quantity 2\\\":null,\\\"Repro Origination.Item Description 3\\\":null,\\\"Repro Origination.Product Code 3\\\":null,\\\"Repro Origination.Quantity 3\\\":null,\\\"Repro Origination.Item Description 4\\\":null,\\\"Repro Origination.Product Code 4\\\":null,\\\"Repro Origination.Quantity 4\\\":null,\\\"Repro Origination.Item Description 5\\\":null,\\\"Repro Origination.Product Code 5\\\":null,\\\"Repro Origination.Quantity 5\\\":null,\\\"Repro Origination.Item Description 6\\\":null,\\\"Repro Origination.Product Code 6\\\":null,\\\"Repro Origination.Quantity 6\\\":null,\\\"Repro Origination.Item Description 7\\\":null,\\\"Repro Origination.Product Code 7\\\":null,\\\"Repro Origination.Quantity 7\\\":null,\\\"Repro Origination.Item Description 8\\\":null,\\\"Repro Origination.Product Code 8\\\":null,\\\"Repro Origination.Quantity 8\\\":null,\\\"Repro Origination.Item Description 9\\\":null,\\\"Repro Origination.Product Code 9\\\":null,\\\"Repro Origination.Quantity 9\\\":null,\\\"Repro Origination.Item Description 10\\\":null,\\\"Repro Origination.Product Code 10\\\":null,\\\"Repro Origination.Quantity 10\\\":null},\\\"Product & Sizes\\\":{\\\"Product & Sizes.Manufacturing Process\\\":\\\"{Key:'1',Value:'Overprint'}\\\",\\\"Product & Sizes.Product Type\\\":\\\"{Key:'3',Value:'Square'}\\\",\\\"Product & Sizes.Adhesive\\\":\\\"{Key:'2',Value:'Self Seal'}\\\",\\\"Product & Sizes.Finished Size\\\":\\\"{Key:'1',Value:'Standard'}\\\",\\\"Product & Sizes.Finished Orientation\\\":\\\"{Key:'1',Value:'Wallet'}\\\",\\\"Product & Sizes.Finished Size - Standard\\\":\\\"{Key:'4',Value:'C5 162 mm x 229 mm'}\\\",\\\"Product & Sizes.Bespoke Finished Size - Units\\\":null,\\\"Product & Sizes.Bespoke Finished Size - Height\\\":null,\\\"Product & Sizes.Bespoke Finished Size - Width\\\":null,\\\"Product & Sizes.Bespoke Flap Size - Height\\\":null,\\\"Product & Sizes.Bespoke Flap Size - Width\\\":null,\\\"Product & Sizes.Finished Orientation Width\\\":null},\\\"Window\\\":{\\\"Window.Has Window\\\":\\\"{Key:'2',Value:'No'}\\\",\\\"Window.Number Of Windows\\\":\\\"\\\",\\\"Window.Bespoke Window Size 1 - Units\\\":\\\"\\\",\\\"Window.Bespoke Window Size 1- Height\\\":\\\"\\\",\\\"Window.Bespoke Window Size 1- Width\\\":\\\"\\\",\\\"Window.Window Postion 1 up from Bottom\\\":\\\"\\\",\\\"Window.Window Postion 1 in from left side\\\":\\\"\\\",\\\"Window.Bespoke Window Size 2 - Units\\\":\\\"\\\",\\\"Window.Bespoke Window Size 2- Height\\\":\\\"\\\",\\\"Window.Bespoke Window Size 2- Width\\\":\\\"\\\",\\\"Window.Window Postion 2 up from Bottom\\\":\\\"\\\",\\\"Window.Window Postion 2 in from left side\\\":\\\"\\\",\\\"Window.Bespoke Window Size 3 - Units\\\":\\\"\\\",\\\"Window.Bespoke Window Size 3- Height\\\":\\\"\\\",\\\"Window.Bespoke Window Size 3- Width\\\":\\\"\\\",\\\"Window.Window Postion 3 up from Bottom\\\":\\\"\\\",\\\"Window.Window Postion 3 in from left side\\\":\\\"\\\"},\\\"Materials\\\":{\\\"Materials.MaterialType\\\":\\\"{Key:'1',Value:'Silk'}\\\",\\\"Materials.Other Material Type\\\":null,\\\"Materials.MaterialBrand\\\":\\\"{Key:'2',Value:'Nova tech'}\\\",\\\"Materials.Other Material Brand\\\":null,\\\"Materials.WeightUnit\\\":\\\"{Key:'1',Value:'GSM'}\\\",\\\"Materials.Material Weight\\\":\\\"{Key:'4',Value:'100'}\\\",\\\"Materials.Other Material Weight\\\":null,\\\"Materials.Material Thickness\\\":null,\\\"Materials.Other Material Thickness\\\":null},\\\"Colours & Print\\\":{\\\"Colours & Print.Type of Print\\\":\\\"{Key:'3',Value:'Digital'}\\\",\\\"Colours & Print.Number of Sides\\\":\\\"{Key:'2',Value:'2'}\\\",\\\"Colours & Print.Colours Front\\\":\\\"{Key:'3',Value:'Specials'}\\\",\\\"Colours & Print.Specials\\\":\\\"{Key:'1',Value:'1'}\\\",\\\"Colours & Print.Pantone Colours\\\":null,\\\"Colours & Print.Colours Back\\\":\\\"{Key:'1',Value:'Mono'}\\\",\\\"Colours & Print.Pantone Colours \\\":null,\\\"Colours & Print.Sealer or Coating Required Front\\\":null,\\\"Colours & Print.Sealer or Coating Front\\\":null,\\\"Colours & Print.Sealer Front\\\":null,\\\"Colours & Print.Percentage Converage\\\":null,\\\"Colours & Print.Sealer or Coating Required Front1\\\":\\\"{Key:'2',Value:'No'}\\\",\\\"Colours & Print.Sealer or Coating Front1\\\":null,\\\"Colours & Print.Sealer Front1\\\":null,\\\"Colours & Print.Sealer or Coating Required Back\\\":\\\"{Key:'2',Value:'No'}\\\",\\\"Colours & Print.Sealer or Coating Back\\\":null,\\\"Colours & Print.Sealer Back\\\":null,\\\"Colours & Print.Flap Printed\\\":\\\"{Key:'2',Value:'No'}\\\",\\\"Colours & Print.Flap Colour\\\":null,\\\"Colours & Print.Opaque\\\":\\\"{Key:'1',Value:'Standard'}\\\",\\\"Colours & Print.Opaque Colour\\\":null},\\\"Packing\\\":{\\\"Packing.Packing Requirement\\\":[\\\"{Key:'1',Value:'Boxed'}\\\"],\\\"Packing.Special Packing Instructions\\\":\\\"\\\"}}\",\r\n    \"ProductCategoryJsonSchemaMappingId\": {{ProductCategoryJsonSchemaMappingId}},\r\n    \"ReferenceFieldValue\": null,\r\n    \"CustomerReferenceFieldId\": null,\r\n    \"ClaimOptionId\": {{ClaimOptionId}},\r\n    \"ClaimTypeId\": null,\r\n    \"IsFSC\": true,\r\n    \"VATTypeId\": {{VATTypeId}},\r\n    \"WorkfrontTemplateId\": null,\r\n    \"CostCentreId\": null,\r\n    \"SellOnCostCentreId\": null,\r\n    \"ProductTypeId\": null,\r\n    \"RowVersion\": \"AAAAAAAEQUc=\",\r\n    \"SupplierAdditionalInformation\": null,\r\n    \"CustomerAdditionalInformation\": null,\r\n    \"Active\": true,\r\n    \"IsOrdered\": null,\r\n    \"HasPOD\": null,\r\n    \"DeliveryTypeId\": 7,\r\n    \"CustomerAddressId\": null,\r\n    \"DeliveryTypeOtherComments\": null,\r\n    \"AdditionalDeliveryInstructions\": null,\r\n    \"DeliveryDate\": \"2024-08-31T00:00:00\",\r\n    \"CreatedBy\": \"87bcea9b-381f-4d17-a367-815c88b68f28\",\r\n    \"CreatedOn\": \"2024-08-13T07:05:34.607\",\r\n    \"ModifiedBy\": null,\r\n    \"ModifiedOn\": \"2024-08-13T09:05:34.67\",\r\n    \"INVCreatedBy\": null,\r\n    \"INVCreatedDate\": null,\r\n    \"InvoiceNumber\": null,\r\n    \"CommodityCode\": \"{{CommodityCode}}\",\r\n    \"TransparentPricing\": false,\r\n    \"IsBlanketPO\": false,\r\n    \"BlanketPOId\": null,\r\n    \"IsDistribution\": false,\r\n    \"IsStockedItem\": null,\r\n    \"ValuationTypeId\": null,\r\n    \"CompanyId\": null,\r\n    \"AvailableBlanketPOValue\": null,\r\n    \"ExternalReferenceItemNumber\": null,\r\n    \"Reference\": null,\r\n    \"AuditReference\": null,\r\n    \"AuditApplicable\": null,\r\n    \"Campaign\": {\r\n        \"CampaignId\": {{Campaign.CampaignId}},\r\n        \"CampaignGuid\": \"{{Campaign.CampaignGuid}}\",\r\n        \"CustomerId\": {{Campaign.CustomerId}},\r\n        \"AccountManagerId\": {{Campaign.AccountManagerId}},\r\n        \"CampaignSettingId\": {{Campaign.CampaignSettingId}},\r\n        \"CurrencyId\": {{Campaign.CurrencyId}},\r\n        \"CustomerEntityId\": {{Campaign.CustomerEntityId}},\r\n        \"CustomerContactId\": null,\r\n        \"SalesRepresentativeId\": {{Campaign.SalesRepresentativeId}},\r\n        \"BusinessUnitId\": {{Campaign.BusinessUnitId}},\r\n        \"CampaignName\": \"{{Campaign.CampaignName}}\",\r\n        \"CampaignNumber\": \"{{Campaign.CampaignNumber}}\",\r\n        \"CampaignReference\": null,\r\n        \"PurchaseOrderNumber\": null,\r\n        \"PurchaseOrderValue\": null,\r\n        \"CampaignDeliveryDate\": \"2024-08-31T00:00:00\",\r\n        \"JobDeliveryDate\": \"0001-01-01T00:00:00\",\r\n        \"IsTransparent\": false,\r\n        \"IsFSC\": false,\r\n        \"TrackingStatusId\": {{Campaign.TrackingStatusId}},\r\n        \"ReferenceFieldValue\": null,\r\n        \"VATTypeId\": {{Campaign.VATTypeId}},\r\n        \"CostCentreId\": null,\r\n        \"SellOnCostCentreId\": null,\r\n        \"ProductTypeId\": null,\r\n        \"RowVersion\": \"AAAAAAAEQUg=\",\r\n        \"Active\": true,\r\n        \"CreatedBy\": \"87bcea9b-381f-4d17-a367-815c88b68f28\",\r\n        \"CreatedOn\": \"2024-08-13T07:05:13.9\",\r\n        \"ModifiedBy\": \"87bcea9b-381f-4d17-a367-815c88b68f28\",\r\n        \"ModifiedOn\": null,\r\n        \"Comments\": null,\r\n        \"BusinessUnitVATRegistrationMappingId\": {{Campaign.BusinessUnitVATRegistrationMappingId}},\r\n        \"IsRebateApplicable\": null,\r\n        \"RebatePercentage\": null,\r\n        \"RebateComments\": null,\r\n        \"ExternalReferenceNumber\": null,\r\n        \"TransparentPricing\": false,\r\n        \"IsBlanketPO\": false,\r\n        \"BlanketPOId\": null,\r\n        \"AvailableBlanketPOValue\": null,\r\n        \"ApplicationGuid\": null,\r\n        \"Customer\": {\r\n            \"CustomerId\": {{Campaign.Customer.CustomerId}},\r\n            \"CustomerGuid\": \"{{Campaign.Customer.CustomerGuid}}\",\r\n            \"CustomerName\": \"{{Campaign.Customer.CustomerName}}\",\r\n            \"Margin\": 10,\r\n            \"LogoPath\": null,\r\n            \"IsTransparent\": false,\r\n            \"IsHideLogo\": false,\r\n            \"ProofsEnabled\": false,\r\n            \"CampaignSettingId\": {{Campaign.Customer.CampaignSettingId}},\r\n            \"Active\": true,\r\n            \"CreatedBy\": \"d894b5bc-d536-4405-9a10-10dccd6ad5d0\",\r\n            \"CreatedOn\": \"2020-06-23T23:13:51.373\",\r\n            \"ModifiedBy\": \"01b37339-6043-4d3e-8de4-94db5dfc63cb\",\r\n            \"ModifiedOn\": \"2024-08-02T13:21:02.903\",\r\n            \"QuotePONumberRequired\": null,\r\n            \"IsPONumberMandatory\": null,\r\n            \"CampaignSetting\": null,\r\n            \"Campaigns\": [],\r\n            \"CustomerAddresses\": null,\r\n            \"CustomerCurrencyMappings\": null,\r\n            \"CustomFields\": null,\r\n            \"CustomerReferenceFields\": null,\r\n            \"CustomerEntities\": null,\r\n            \"Users\": null,\r\n            \"EmailDomains\": null,\r\n            \"CustomerConfigurationKeyValues\": null,\r\n            \"CustomerUserGroupMappings\": null,\r\n            \"CustomerSalesRepresentativeMappings\": null,\r\n            \"ProductCategoryJsonSchemaMappings\": null,\r\n            \"ApprovalLimits\": null,\r\n            \"CampaignItemPOInformation\": null,\r\n            \"CostCentrePageMapping\": null,\r\n            \"SellOnCostCentrePageMappings\": null,\r\n            \"ProductTypePageMappings\": null,\r\n            \"UserCustomerMappings\": null,\r\n            \"CurrencyRates\": null,\r\n            \"CustomerProductCategoryJsonSchemaMappings\": null,\r\n            \"UserCustomerEntityMappings\": null,\r\n            \"BlanketPO\": null,\r\n            \"TemplateGroups\": null,\r\n            \"CustomerEntityBusinessUnitMappings\": null,\r\n            \"Decisions\": null,\r\n            \"TemplateCustomerMappings\": null\r\n        },\r\n        \"CampaignSetting\": null,\r\n        \"Currency\": null,\r\n        \"AccountManager\": null,\r\n        \"CustomerContact\": null,\r\n        \"BusinessUnit\": null,\r\n        \"TrackingStatus\": null,\r\n        \"VATType\": null,\r\n        \"SellOnCostCentres\": null,\r\n        \"CampaignItems\": [],\r\n        \"CampaignItemPOApprovalInformations\": null,\r\n        \"CampaignItemQuotes\": null,\r\n        \"CampaignItemPOInformation\": null,\r\n        \"CampaignItemPrices\": null,\r\n        \"BusinessUnitVATRegistrationMapping\": null,\r\n        \"IsArchived\": false,\r\n        \"BrandId\": null,\r\n        \"Brand\": null,\r\n        \"IsDistribution\": null,\r\n        \"DistributionHeaders\": null,\r\n        \"OrderTrackingStatusId\": null,\r\n        \"IsCompleted\": null,\r\n        \"OrderTrackingStatus\": null,\r\n        \"CampaignItemDistributionLines\": null,\r\n        \"IsCarbonCalculator\": null\r\n    },\r\n    \"ProductCategory\": {\r\n        \"ProductCategoryId\": {{ProductCategory.ProductCategoryId}},\r\n        \"ProductCategoryGuid\": \"{{ProductCategory.ProductCategoryGuid}}\",\r\n        \"ProductCategoryName\": \"{{ProductCategory.ProductCategoryName}}\",\r\n        \"ProductCategoryDescription\": \"{{ProductCategory.ProductCategoryDescription}}\",\r\n        \"ProductCategoryLogoPath\": \"{{ProductCategory.ProductCategoryLogoPath}}\",\r\n        \"Active\": true,\r\n        \"CreatedBy\": \"d894b5bc-d536-4405-9a10-10dccd6ad5d0\",\r\n        \"CreatedOn\": \"2020-08-06T17:35:46.063\",\r\n        \"ModifiedBy\": \"1d08f069-3204-42b5-87dc-ff6c41067161\",\r\n        \"ModifiedOn\": \"2024-03-20T04:55:48.06\",\r\n        \"BusinessUnitId\": null,\r\n        \"ProductCategoryJsonSchemaMappings\": null,\r\n        \"CampaignItems\": [],\r\n        \"ProductCategoryCostMappings\": null,\r\n        \"ProductCategoryScheduleTypeMappings\": [],\r\n        \"ProductCategoryCriteriaValues\": null,\r\n        \"BusinessUnit\": null\r\n    },\r\n    \"TrackingItem\": {\r\n        \"TrackingItemId\": {{TrackingItem.TrackingItemId}},\r\n        \"TrackingItemGuid\": \"{{TrackingItem.TrackingItemGuid}}\",\r\n        \"Description\": null,\r\n        \"TrackingHeaderId\": {{TrackingItem.TrackingHeaderId}},\r\n        \"TrackingStatusId\": {{TrackingItem.TrackingStatusId}},\r\n        \"Sequence\": {{TrackingItem.Sequence}},\r\n        \"RowVersion\": \"AAAAAAADqW8=\",\r\n        \"Active\": true,\r\n        \"CreatedBy\": \"00000000-0000-0000-0000-000000000000\",\r\n        \"CreatedOn\": \"2020-06-23T19:40:42.043\",\r\n        \"ModifiedBy\": null,\r\n        \"ModifiedOn\": null,\r\n        \"TrackingHeader\": null,\r\n        \"TrackingStatus\": {\r\n            \"TrackingStatusId\": {{TrackingItem.TrackingStatus.TrackingStatusId}},\r\n            \"TrackingStatusGuid\": \"{{TrackingItem.TrackingStatus.TrackingStatusGuid}}\",\r\n            \"Name\": \"{{TrackingItem.TrackingStatus.Name}}\",\r\n            \"Description\": \"{{TrackingItem.TrackingStatus.Description}}\",\r\n            \"RowVersion\": \"AAAAAAADqY0=\",\r\n            \"Active\": true,\r\n            \"CreatedBy\": \"00000000-0000-0000-0000-000000000000\",\r\n            \"CreatedOn\": \"2020-06-23T19:40:41.05\",\r\n            \"ModifiedBy\": null,\r\n            \"ModifiedOn\": null,\r\n            \"Campaigns\": null,\r\n            \"OrderCampaigns\": null,\r\n            \"CampaignItemSuppliers\": null,\r\n            \"CampaignItemPOInformations\": null,\r\n            \"TrackingStatusRankings\": null,\r\n            \"OrderTrackingStatusRankings\": null\r\n        }\r\n    },\r\n    \"ClaimOption\": {\r\n        \"ClaimOptionId\": {{ClaimOption.ClaimOptionId}},\r\n        \"ClaimOptionGuid\": \"{{ClaimOption.ClaimOptionGuid}}\",\r\n        \"ClaimOptionName\": \"{{ClaimOption.ClaimOptionName}}\",\r\n        \"Active\": true,\r\n        \"CreatedBy\": \"00000000-0000-0000-0000-000000000000\",\r\n        \"CreatedOn\": \"2024-07-04T06:04:31.213\",\r\n        \"ModifiedBy\": null,\r\n        \"ModifiedOn\": null,\r\n        \"ClaimTypes\": null,\r\n        \"CampaignItems\": []\r\n    },\r\n    \"ClaimType\": null,\r\n    \"VATType\": null,\r\n    \"ProductCategoryJsonSchemaMapping\": null,\r\n    \"CustomerReferenceField\": null,\r\n    \"DeliveryTypes\": null,\r\n    \"DeliveryTypeOptions\": null,\r\n    \"CustomerAddresses\": null,\r\n    \"CampaignItemQuantities\": [\r\n        {\r\n            \"TSQuantity\": \"{{CampaignItemQuantities.0.Quantity}}\",\r\n            \"CampaignItemQuantityId\": 0,\r\n            \"Active\": true,\r\n            \"Quantity\": {{CampaignItemQuantities.0.Quantity}}\r\n        }\r\n    ],\r\n    \"CampaignItemSuppliers\": null,\r\n    \"CampaignItemCostMappings\": [\r\n        {\r\n            \"CampaignItemId\": {{CampaignItemCostMappings.0.CampaignItemId}},\r\n            \"CostId\": {{CampaignItemCostMappings.0.CostId}},\r\n            \"Active\": true\r\n        },\r\n        {\r\n            \"CampaignItemId\": {{CampaignItemCostMappings.0.CampaignItemId}},\r\n            \"CostId\": {{CampaignItemCostMappings.0.CostId}},\r\n            \"Active\": true\r\n        },\r\n        {\r\n            \"CampaignItemId\": {{CampaignItemCostMappings.0.CampaignItemId}},\r\n            \"CostId\": {{CampaignItemCostMappings.0.CostId}},\r\n            \"Active\": true\r\n        }\r\n    ],\r\n    \"CampaignItemSupplierCostPrices\": null,\r\n    \"SupportingDocuments\": null,\r\n    \"CampaignItemSupplierComments\": null,\r\n    \"CampaignItemPOApprovalInformations\": null,\r\n    \"CampaignItemPOCreationDetails\": null,\r\n    \"CampaignItemQuotes\": null,\r\n    \"CampaignItemPOInformation\": null,\r\n    \"CampaignItemPrices\": null,\r\n    \"CampaignItemScheduleTypesMappings\": [],\r\n    \"CampaignItemInvoiceDetails\": null,\r\n    \"SellOnCostCentre\": null,\r\n    \"ProductType\": null,\r\n    \"CostCentre\": null,\r\n    \"DataAllocation\": false,\r\n    \"FSCLevelOneId\": null,\r\n    \"FSCLevelTwoId\": null,\r\n    \"FSCLevelThreeId\": null,\r\n    \"FSCLevelOne\": null,\r\n    \"FSCLevelTwo\": null,\r\n    \"FSCLevelThree\": null,\r\n    \"BlanketPO\": null,\r\n    \"BrandId\": null,\r\n    \"CustomerContactId\": null,\r\n    \"Brands\": null,\r\n    \"Quantity\": 0,\r\n    \"NetWeight\": 0,\r\n    \"SellPrice\": 0,\r\n    \"isLogisticService\": null,\r\n    \"LineTypeId\": null,\r\n    \"TagParent\": null,\r\n    \"isLogisticServiceChild\": null,\r\n    \"ReferenceGroupId\": null,\r\n    \"ShippingDeliveryId\": 0,\r\n    \"FromAlpha2Code\": \"0\",\r\n    \"DistributionLines\": null,\r\n    \"CampaignItemProofs\": null,\r\n    \"WorkfrontTemplate\": null,\r\n    \"CampaignItemReferences\": null,\r\n    \"CampaignItemDistributionLines\": [],\r\n    \"CampaignItemWarehouseStockLines\": [],\r\n    \"valuationType\": null,\r\n    \"company\": null,\r\n    \"CampaignItemDeliveryDate\": \"2024-08-31T00:00:00\",\r\n    \"Checked\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/CampaignAPI/api/campaignitems/updateIsFSC",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"CampaignAPI",
+						"api",
+						"campaignitems",
+						"updateIsFSC"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ClickonSave&CloseSelectingDelivery",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const moment = require('moment');\r",
+							"pm.collectionVariables.set(\"timestamp1\", moment().utc(0).format(\"YYYY-MM-DDTHH:mm:ss.mm\"));\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful PUT request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{cl_AuthToken2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					},
+					{
+						"key": "id",
+						"value": "{{cl_UserId}}",
+						"type": "text"
+					},
+					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"CampaignItemId\": {{cl_CampaignItemID}},\r\n    \"CampaignItemGuid\": \"{{cl_CampaignItemGuiD}}\",\r\n    \"CampaignId\": {{Campaign.CampaignId}},\r\n    \"CampaignItemName\": \"{{cl_CampaignItemName}}\",\r\n    \"CampaignItemReference\": \"{{cl_CampaignItemReFerence}}\",\r\n    \"ProductCategoryId\": {{cl_ProductCategoryId}},\r\n    \"StockCode\": \"{{cl_StockCode}}\",\r\n    \"TrackingItemId\": 1,\r\n    \"PurchaseOrderNumber\": null,\r\n    \"ParagonInvoiceNumber\": null,\r\n    \"SpecificationValue\": \"{\\\"Repro Origination\\\":{\\\"Repro Origination.A/WSuppliedAs\\\":\\\"{Key:'2',Value:'Print Ready PDF'}\\\",\\\"Repro Origination.Other Artwork Supplied\\\":null,\\\"Repro Origination.Proofing\\\":\\\"{Key:'2',Value:'Hard Copy Contract Proof'}\\\",\\\"Repro Origination.Proofing Info\\\":\\\"\\\",\\\"Repro Origination.Artwork Versions\\\":\\\"{Key:'2',Value:'No'}\\\",\\\"Repro Origination.Number of Versions\\\":null,\\\"Repro Origination.Item Description\\\":null,\\\"Repro Origination.Product Code\\\":null,\\\"Repro Origination.Quantity\\\":null,\\\"Repro Origination.Item Description 1\\\":null,\\\"Repro Origination.Product Code 1\\\":null,\\\"Repro Origination.Quantity 1\\\":null,\\\"Repro Origination.Item Description 2\\\":null,\\\"Repro Origination.Product Code 2\\\":null,\\\"Repro Origination.Quantity 2\\\":null,\\\"Repro Origination.Item Description 3\\\":null,\\\"Repro Origination.Product Code 3\\\":null,\\\"Repro Origination.Quantity 3\\\":null,\\\"Repro Origination.Item Description 4\\\":null,\\\"Repro Origination.Product Code 4\\\":null,\\\"Repro Origination.Quantity 4\\\":null,\\\"Repro Origination.Item Description 5\\\":null,\\\"Repro Origination.Product Code 5\\\":null,\\\"Repro Origination.Quantity 5\\\":null,\\\"Repro Origination.Item Description 6\\\":null,\\\"Repro Origination.Product Code 6\\\":null,\\\"Repro Origination.Quantity 6\\\":null,\\\"Repro Origination.Item Description 7\\\":null,\\\"Repro Origination.Product Code 7\\\":null,\\\"Repro Origination.Quantity 7\\\":null,\\\"Repro Origination.Item Description 8\\\":null,\\\"Repro Origination.Product Code 8\\\":null,\\\"Repro Origination.Quantity 8\\\":null,\\\"Repro Origination.Item Description 9\\\":null,\\\"Repro Origination.Product Code 9\\\":null,\\\"Repro Origination.Quantity 9\\\":null,\\\"Repro Origination.Item Description 10\\\":null,\\\"Repro Origination.Product Code 10\\\":null,\\\"Repro Origination.Quantity 10\\\":null},\\\"Product & Sizes\\\":{\\\"Product & Sizes.Manufacturing Process\\\":\\\"{Key:'1',Value:'Overprint'}\\\",\\\"Product & Sizes.Product Type\\\":\\\"{Key:'3',Value:'Square'}\\\",\\\"Product & Sizes.Adhesive\\\":\\\"{Key:'2',Value:'Self Seal'}\\\",\\\"Product & Sizes.Finished Size\\\":\\\"{Key:'1',Value:'Standard'}\\\",\\\"Product & Sizes.Finished Orientation\\\":\\\"{Key:'1',Value:'Wallet'}\\\",\\\"Product & Sizes.Finished Size - Standard\\\":\\\"{Key:'4',Value:'C5 162 mm x 229 mm'}\\\",\\\"Product & Sizes.Bespoke Finished Size - Units\\\":null,\\\"Product & Sizes.Bespoke Finished Size - Height\\\":null,\\\"Product & Sizes.Bespoke Finished Size - Width\\\":null,\\\"Product & Sizes.Bespoke Flap Size - Height\\\":null,\\\"Product & Sizes.Bespoke Flap Size - Width\\\":null,\\\"Product & Sizes.Finished Orientation Width\\\":null},\\\"Window\\\":{\\\"Window.Has Window\\\":\\\"{Key:'2',Value:'No'}\\\",\\\"Window.Number Of Windows\\\":\\\"\\\",\\\"Window.Bespoke Window Size 1 - Units\\\":\\\"\\\",\\\"Window.Bespoke Window Size 1- Height\\\":\\\"\\\",\\\"Window.Bespoke Window Size 1- Width\\\":\\\"\\\",\\\"Window.Window Postion 1 up from Bottom\\\":\\\"\\\",\\\"Window.Window Postion 1 in from left side\\\":\\\"\\\",\\\"Window.Bespoke Window Size 2 - Units\\\":\\\"\\\",\\\"Window.Bespoke Window Size 2- Height\\\":\\\"\\\",\\\"Window.Bespoke Window Size 2- Width\\\":\\\"\\\",\\\"Window.Window Postion 2 up from Bottom\\\":\\\"\\\",\\\"Window.Window Postion 2 in from left side\\\":\\\"\\\",\\\"Window.Bespoke Window Size 3 - Units\\\":\\\"\\\",\\\"Window.Bespoke Window Size 3- Height\\\":\\\"\\\",\\\"Window.Bespoke Window Size 3- Width\\\":\\\"\\\",\\\"Window.Window Postion 3 up from Bottom\\\":\\\"\\\",\\\"Window.Window Postion 3 in from left side\\\":\\\"\\\"},\\\"Materials\\\":{\\\"Materials.MaterialType\\\":\\\"{Key:'1',Value:'Silk'}\\\",\\\"Materials.Other Material Type\\\":null,\\\"Materials.MaterialBrand\\\":\\\"{Key:'2',Value:'Nova tech'}\\\",\\\"Materials.Other Material Brand\\\":null,\\\"Materials.WeightUnit\\\":\\\"{Key:'1',Value:'GSM'}\\\",\\\"Materials.Material Weight\\\":\\\"{Key:'4',Value:'100'}\\\",\\\"Materials.Other Material Weight\\\":null,\\\"Materials.Material Thickness\\\":null,\\\"Materials.Other Material Thickness\\\":null},\\\"Colours & Print\\\":{\\\"Colours & Print.Type of Print\\\":\\\"{Key:'3',Value:'Digital'}\\\",\\\"Colours & Print.Number of Sides\\\":\\\"{Key:'2',Value:'2'}\\\",\\\"Colours & Print.Colours Front\\\":\\\"{Key:'3',Value:'Specials'}\\\",\\\"Colours & Print.Specials\\\":\\\"{Key:'1',Value:'1'}\\\",\\\"Colours & Print.Pantone Colours\\\":null,\\\"Colours & Print.Colours Back\\\":\\\"{Key:'1',Value:'Mono'}\\\",\\\"Colours & Print.Pantone Colours \\\":null,\\\"Colours & Print.Sealer or Coating Required Front\\\":null,\\\"Colours & Print.Sealer or Coating Front\\\":null,\\\"Colours & Print.Sealer Front\\\":null,\\\"Colours & Print.Percentage Converage\\\":null,\\\"Colours & Print.Sealer or Coating Required Front1\\\":\\\"{Key:'2',Value:'No'}\\\",\\\"Colours & Print.Sealer or Coating Front1\\\":null,\\\"Colours & Print.Sealer Front1\\\":null,\\\"Colours & Print.Sealer or Coating Required Back\\\":\\\"{Key:'2',Value:'No'}\\\",\\\"Colours & Print.Sealer or Coating Back\\\":null,\\\"Colours & Print.Sealer Back\\\":null,\\\"Colours & Print.Flap Printed\\\":\\\"{Key:'2',Value:'No'}\\\",\\\"Colours & Print.Flap Colour\\\":null,\\\"Colours & Print.Opaque\\\":\\\"{Key:'1',Value:'Standard'}\\\",\\\"Colours & Print.Opaque Colour\\\":null},\\\"Packing\\\":{\\\"Packing.Packing Requirement\\\":[\\\"{Key:'1',Value:'Boxed'}\\\"],\\\"Packing.Special Packing Instructions\\\":\\\"\\\"}}\",\r\n    \"ProductCategoryJsonSchemaMappingId\": {{ProductCategoryJsonSchemaMappingId}},\r\n    \"ReferenceFieldValue\": null,\r\n    \"CustomerReferenceFieldId\": null,\r\n    \"ClaimOptionId\": {{ClaimOptionId}},\r\n    \"ClaimTypeId\": null,\r\n    \"IsFSC\": true,\r\n    \"VATTypeId\": 1,\r\n    \"WorkfrontTemplateId\": null,\r\n    \"CostCentreId\": null,\r\n    \"SellOnCostCentreId\": null,\r\n    \"ProductTypeId\": null,\r\n    \"RowVersion\": \"{{RowVersion}}\",\r\n    \"SupplierAdditionalInformation\": null,\r\n    \"CustomerAdditionalInformation\": null,\r\n    \"Active\": true,\r\n    \"IsOrdered\": null,\r\n    \"HasPOD\": null,\r\n    \"DeliveryTypeId\": 7,\r\n    \"CustomerAddressId\": null,\r\n    \"DeliveryTypeOtherComments\": null,\r\n    \"AdditionalDeliveryInstructions\": null,\r\n    \"DeliveryDate\": \"08/20/2024\",\r\n    \"CreatedBy\": \"87bcea9b-381f-4d17-a367-815c88b68f28\",\r\n    \"CreatedOn\": \"{{timestamp1}}\",\r\n    \"ModifiedBy\": null,\r\n    \"ModifiedOn\": \"{{timestamp1}}\",\r\n    \"INVCreatedBy\": null,\r\n    \"INVCreatedDate\": null,\r\n    \"InvoiceNumber\": null,\r\n    \"CommodityCode\": \"{{CommodityCode}}\",\r\n    \"TransparentPricing\": false,\r\n    \"IsBlanketPO\": false,\r\n    \"BlanketPOId\": null,\r\n    \"IsDistribution\": false,\r\n    \"IsStockedItem\": null,\r\n    \"ValuationTypeId\": null,\r\n    \"CompanyId\": null,\r\n    \"AvailableBlanketPOValue\": null,\r\n    \"ExternalReferenceItemNumber\": null,\r\n    \"Reference\": null,\r\n    \"AuditReference\": null,\r\n    \"AuditApplicable\": null,\r\n    \"Campaign\": {\r\n        \"CampaignId\": {{Campaign.CampaignId}},\r\n        \"CampaignGuid\": \"{{Campaign.CampaignGuid}}\",\r\n        \"CustomerId\": {{Campaign.CustomerId}},\r\n        \"AccountManagerId\": {{Campaign.AccountManagerId}},\r\n        \"CampaignSettingId\": {{Campaign.CampaignSettingId}},\r\n        \"CurrencyId\": {{Campaign.CurrencyId}},\r\n        \"CustomerEntityId\": {{Campaign.CustomerEntityId}},\r\n        \"CustomerContactId\": null,\r\n        \"SalesRepresentativeId\": {{Campaign.SalesRepresentativeId}},\r\n        \"BusinessUnitId\": {{Campaign.BusinessUnitId}},\r\n        \"CampaignName\": \"{{Campaign.CampaignName}}\",\r\n        \"CampaignNumber\": \"{{Campaign.CampaignNumber}}\",\r\n        \"CampaignReference\": null,\r\n        \"PurchaseOrderNumber\": null,\r\n        \"PurchaseOrderValue\": null,\r\n        \"CampaignDeliveryDate\": \"2024-08-31T00:00:00\",\r\n        \"JobDeliveryDate\": \"0001-01-01T00:00:00\",\r\n        \"IsTransparent\": false,\r\n        \"IsFSC\": false,\r\n        \"TrackingStatusId\": {{Campaign.TrackingStatusId}},\r\n        \"ReferenceFieldValue\": null,\r\n        \"VATTypeId\": {{Campaign.VATTypeId}},\r\n        \"CostCentreId\": null,\r\n        \"SellOnCostCentreId\": null,\r\n        \"ProductTypeId\": null,\r\n        \"RowVersion\": \"{{Campaign.RowVersion}}\",\r\n        \"Active\": true,\r\n        \"CreatedBy\": \"87bcea9b-381f-4d17-a367-815c88b68f28\",\r\n        \"CreatedOn\": \"{{timestamp1}}\",\r\n        \"ModifiedBy\": \"87bcea9b-381f-4d17-a367-815c88b68f28\",\r\n        \"ModifiedOn\": null,\r\n        \"Comments\": null,\r\n        \"BusinessUnitVATRegistrationMappingId\": {{Campaign.BusinessUnitVATRegistrationMappingId}},\r\n        \"IsRebateApplicable\": null,\r\n        \"RebatePercentage\": null,\r\n        \"RebateComments\": null,\r\n        \"ExternalReferenceNumber\": null,\r\n        \"TransparentPricing\": false,\r\n        \"IsBlanketPO\": false,\r\n        \"BlanketPOId\": null,\r\n        \"AvailableBlanketPOValue\": null,\r\n        \"ApplicationGuid\": null,\r\n        \"Customer\": {\r\n            \"CustomerId\": {{Campaign.Customer.CustomerId}},\r\n            \"CustomerGuid\": \"{{Campaign.Customer.CustomerGuid}}\",\r\n            \"CustomerName\": \"{{Campaign.Customer.CustomerName}}\",\r\n            \"Margin\": 10,\r\n            \"LogoPath\": null,\r\n            \"IsTransparent\": false,\r\n            \"IsHideLogo\": false,\r\n            \"ProofsEnabled\": false,\r\n            \"CampaignSettingId\": {{Campaign.Customer.CampaignSettingId}},\r\n            \"Active\": true,\r\n            \"CreatedBy\": \"d894b5bc-d536-4405-9a10-10dccd6ad5d0\",\r\n            \"CreatedOn\": \"2020-06-23T23:13:51.373\",\r\n            \"ModifiedBy\": \"01b37339-6043-4d3e-8de4-94db5dfc63cb\",\r\n            \"ModifiedOn\": \"2024-08-02T13:21:02.903\",\r\n            \"QuotePONumberRequired\": null,\r\n            \"IsPONumberMandatory\": null,\r\n            \"CampaignSetting\": null,\r\n            \"Campaigns\": [],\r\n            \"CustomerAddresses\": null,\r\n            \"CustomerCurrencyMappings\": null,\r\n            \"CustomFields\": null,\r\n            \"CustomerReferenceFields\": null,\r\n            \"CustomerEntities\": null,\r\n            \"Users\": null,\r\n            \"EmailDomains\": null,\r\n            \"CustomerConfigurationKeyValues\": null,\r\n            \"CustomerUserGroupMappings\": null,\r\n            \"CustomerSalesRepresentativeMappings\": null,\r\n            \"ProductCategoryJsonSchemaMappings\": null,\r\n            \"ApprovalLimits\": null,\r\n            \"CampaignItemPOInformation\": null,\r\n            \"CostCentrePageMapping\": null,\r\n            \"SellOnCostCentrePageMappings\": null,\r\n            \"ProductTypePageMappings\": null,\r\n            \"UserCustomerMappings\": null,\r\n            \"CurrencyRates\": null,\r\n            \"CustomerProductCategoryJsonSchemaMappings\": null,\r\n            \"UserCustomerEntityMappings\": null,\r\n            \"BlanketPO\": null,\r\n            \"TemplateGroups\": null,\r\n            \"CustomerEntityBusinessUnitMappings\": null,\r\n            \"Decisions\": null,\r\n            \"TemplateCustomerMappings\": null\r\n        },\r\n        \"CampaignSetting\": null,\r\n        \"Currency\": null,\r\n        \"AccountManager\": null,\r\n        \"CustomerContact\": null,\r\n        \"BusinessUnit\": null,\r\n        \"TrackingStatus\": null,\r\n        \"VATType\": null,\r\n        \"SellOnCostCentres\": null,\r\n        \"CampaignItems\": [],\r\n        \"CampaignItemPOApprovalInformations\": null,\r\n        \"CampaignItemQuotes\": null,\r\n        \"CampaignItemPOInformation\": null,\r\n        \"CampaignItemPrices\": null,\r\n        \"BusinessUnitVATRegistrationMapping\": null,\r\n        \"IsArchived\": false,\r\n        \"BrandId\": null,\r\n        \"Brand\": null,\r\n        \"IsDistribution\": null,\r\n        \"DistributionHeaders\": null,\r\n        \"OrderTrackingStatusId\": null,\r\n        \"IsCompleted\": null,\r\n        \"OrderTrackingStatus\": null,\r\n        \"CampaignItemDistributionLines\": null,\r\n        \"IsCarbonCalculator\": null\r\n    },\r\n    \"ProductCategory\": {\r\n        \"ProductCategoryId\": {{ProductCategory.ProductCategoryId}},\r\n        \"ProductCategoryGuid\": \"{{ProductCategory.ProductCategoryGuid}}\",\r\n        \"ProductCategoryName\": \"{{ProductCategory.ProductCategoryName}}\",\r\n        \"ProductCategoryDescription\": \"{{ProductCategory.ProductCategoryDescription}}\",\r\n        \"ProductCategoryLogoPath\": \"{{ProductCategory.ProductCategoryLogoPath}}\",\r\n        \"Active\": true,\r\n        \"CreatedBy\": \"d894b5bc-d536-4405-9a10-10dccd6ad5d0\",\r\n        \"CreatedOn\": \"2020-08-06T17:35:46.063\",\r\n        \"ModifiedBy\": \"1d08f069-3204-42b5-87dc-ff6c41067161\",\r\n        \"ModifiedOn\": \"2024-03-20T04:55:48.06\",\r\n        \"BusinessUnitId\": null,\r\n        \"ProductCategoryJsonSchemaMappings\": null,\r\n        \"CampaignItems\": [],\r\n        \"ProductCategoryCostMappings\": null,\r\n        \"ProductCategoryScheduleTypeMappings\": [],\r\n        \"ProductCategoryCriteriaValues\": null,\r\n        \"BusinessUnit\": null\r\n    },\r\n    \"TrackingItem\": {\r\n        \"TrackingItemId\": {{TrackingItem.TrackingItemId}},\r\n        \"TrackingItemGuid\": \"{{TrackingItem.TrackingItemGuid}}\",\r\n        \"Description\": null,\r\n        \"TrackingHeaderId\": {{TrackingItem.TrackingHeaderId}},\r\n        \"TrackingStatusId\": {{TrackingItem.TrackingStatusId}},\r\n        \"Sequence\": {{TrackingItem.Sequence}},\r\n        \"RowVersion\": \"{{TrackingItem.RowVersion}}\",\r\n        \"Active\": true,\r\n        \"CreatedBy\": \"00000000-0000-0000-0000-000000000000\",\r\n        \"CreatedOn\": \"2020-06-23T19:40:42.043\",\r\n        \"ModifiedBy\": null,\r\n        \"ModifiedOn\": null,\r\n        \"TrackingHeader\": null,\r\n        \"TrackingStatus\": {\r\n            \"TrackingStatusId\": {{TrackingItem.TrackingStatus.TrackingStatusId}},\r\n            \"TrackingStatusGuid\": \"{{TrackingItem.TrackingStatus.TrackingStatusGuid}}\",\r\n            \"Name\": \"{{TrackingItem.TrackingStatus.Name}}\",\r\n            \"Description\": \"{{TrackingItem.TrackingStatus.Description}}\",\r\n            \"RowVersion\": \"{{TrackingItem.TrackingStatus.RowVersion}}\",\r\n            \"Active\": true,\r\n            \"CreatedBy\": \"00000000-0000-0000-0000-000000000000\",\r\n            \"CreatedOn\": \"2020-06-23T19:40:41.05\",\r\n            \"ModifiedBy\": null,\r\n            \"ModifiedOn\": null,\r\n            \"Campaigns\": null,\r\n            \"OrderCampaigns\": null,\r\n            \"CampaignItemSuppliers\": null,\r\n            \"CampaignItemPOInformations\": null,\r\n            \"TrackingStatusRankings\": null,\r\n            \"OrderTrackingStatusRankings\": null\r\n        }\r\n    },\r\n    \"ClaimOption\": {\r\n        \"ClaimOptionId\": {{ClaimOption.ClaimOptionId}},\r\n        \"ClaimOptionGuid\": \"{{ClaimOption.ClaimOptionGuid}}\",\r\n        \"ClaimOptionName\": \"{{ClaimOption.ClaimOptionName}}\",\r\n        \"Active\": true,\r\n        \"CreatedBy\": \"00000000-0000-0000-0000-000000000000\",\r\n        \"CreatedOn\": \"2024-07-04T06:04:31.213\",\r\n        \"ModifiedBy\": null,\r\n        \"ModifiedOn\": null,\r\n        \"ClaimTypes\": null,\r\n        \"CampaignItems\": []\r\n    },\r\n    \"ClaimType\": null,\r\n    \"VATType\": null,\r\n    \"ProductCategoryJsonSchemaMapping\": null,\r\n    \"CustomerReferenceField\": null,\r\n    \"DeliveryTypes\": null,\r\n    \"DeliveryTypeOptions\": null,\r\n    \"CustomerAddresses\": null,\r\n    \"CampaignItemQuantities\": [\r\n        {\r\n            \"TSQuantity\": \"{{CampaignItemQuantities.0.Quantity}}\",\r\n            \"CampaignItemQuantityId\": 0,\r\n            \"Active\": true,\r\n            \"Quantity\": {{CampaignItemQuantities.0.Quantity}}\r\n        }\r\n    ],\r\n    \"CampaignItemSuppliers\": null,\r\n    \"CampaignItemCostMappings\": [\r\n        {\r\n            \"CampaignItemId\": {{CampaignItemCostMappings.0.CampaignItemId}},\r\n            \"CostId\": {{CampaignItemCostMappings.0.CostId}},\r\n            \"Active\": true\r\n        },\r\n        {\r\n            \"CampaignItemId\": {{CampaignItemCostMappings.0.CampaignItemId}},\r\n            \"CostId\": 1,\r\n            \"Active\": true\r\n        },\r\n        {\r\n            \"CampaignItemId\": {{CampaignItemCostMappings.0.CampaignItemId}},\r\n            \"CostId\": 2,\r\n            \"Active\": true\r\n        }\r\n    ],\r\n    \"CampaignItemSupplierCostPrices\": null,\r\n    \"SupportingDocuments\": null,\r\n    \"CampaignItemSupplierComments\": null,\r\n    \"CampaignItemPOApprovalInformations\": null,\r\n    \"CampaignItemPOCreationDetails\": null,\r\n    \"CampaignItemQuotes\": null,\r\n    \"CampaignItemPOInformation\": null,\r\n    \"CampaignItemPrices\": null,\r\n    \"CampaignItemScheduleTypesMappings\": [],\r\n    \"CampaignItemInvoiceDetails\": null,\r\n    \"SellOnCostCentre\": null,\r\n    \"ProductType\": null,\r\n    \"CostCentre\": null,\r\n    \"DataAllocation\": false,\r\n    \"FSCLevelOneId\": null,\r\n    \"FSCLevelTwoId\": null,\r\n    \"FSCLevelThreeId\": null,\r\n    \"FSCLevelOne\": null,\r\n    \"FSCLevelTwo\": null,\r\n    \"FSCLevelThree\": null,\r\n    \"BlanketPO\": null,\r\n    \"BrandId\": null,\r\n    \"CustomerContactId\": null,\r\n    \"Brands\": null,\r\n    \"Quantity\": 0,\r\n    \"NetWeight\": 0,\r\n    \"SellPrice\": 0,\r\n    \"isLogisticService\": null,\r\n    \"LineTypeId\": null,\r\n    \"TagParent\": null,\r\n    \"isLogisticServiceChild\": null,\r\n    \"ReferenceGroupId\": null,\r\n    \"ShippingDeliveryId\": 0,\r\n    \"FromAlpha2Code\": \"0\",\r\n    \"DistributionLines\": null,\r\n    \"CampaignItemProofs\": null,\r\n    \"WorkfrontTemplate\": null,\r\n    \"CampaignItemReferences\": null,\r\n    \"CampaignItemDistributionLines\": [],\r\n    \"CampaignItemWarehouseStockLines\": [],\r\n    \"valuationType\": null,\r\n    \"company\": null,\r\n    \"CampaignItemDeliveryDate\": \"2024-08-31T00:00:00\",\r\n    \"Checked\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/CampaignAPI/api/campaignitems",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"CampaignAPI",
+						"api",
+						"campaignitems"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SubmitforCosting",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// // Retrieve the entire response body from the global variable\r",
+							"// let responseData = pm.globals.get(\"responseData\");\r",
+							"\r",
+							"// // Ensure the responseData is not null or undefined\r",
+							"// if (responseData) {\r",
+							"//     pm.request.body.raw = responseData;\r",
+							"// } else {\r",
+							"//     console.error(\"No response data found\");\r",
+							"// }"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful PUT request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{cl_AuthToken2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					},
+					{
+						"key": "id",
+						"value": "{{cl_UserId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/CampaignAPI/api/campaignitems/{{cl_CampaignItemID}}/submit",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"CampaignAPI",
+						"api",
+						"campaignitems",
+						"{{cl_CampaignItemID}}",
+						"submit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SelectParagonSupplier",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Get the JSON response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Function to recursively extract keys and values from the object\r",
+							"function extractKeysAndValues(obj, parentKey = '') {\r",
+							"    for (let key in obj) {\r",
+							"        if (obj.hasOwnProperty(key)) {\r",
+							"            let fullKey = parentKey ? `${parentKey}.${key}` : key;\r",
+							"            let value = obj[key];\r",
+							"            \r",
+							"            // Print the key and value to the console\r",
+							"            console.log(`${fullKey}: ${value}`);\r",
+							"            \r",
+							"            // Save the value to an environment variable for use in future requests\r",
+							"            pm.collectionVariables.set(fullKey, value);\r",
+							"            \r",
+							"            // If the value is an object, recursively call the function\r",
+							"            if (typeof value === 'object' && value !== null) {\r",
+							"                extractKeysAndValues(value, fullKey);\r",
+							"            }\r",
+							"        }\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"// Call the function with the response\r",
+							"extractKeysAndValues(response);\r",
+							"\r",
+							"pm.test(\"Successful GET request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{cl_AuthToken2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					},
+					{
+						"key": "id",
+						"value": "{{cl_UserId}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/CampaignAPI/api/campaignitemquantities/{{cl_CampaignItemID}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"CampaignAPI",
+						"api",
+						"campaignitemquantities",
+						"{{cl_CampaignItemID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SubmitCostPrice",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true,
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{cl_AuthToken2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					},
+					{
+						"key": "id",
+						"value": "{{cl_UserId}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Referer",
+						"value": "https://uat.paragon-epro.com/campaign/campaigns/campaign-items/{{campaignItemGuid}}/submitprice/{{customerGuid}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n \r\n{\r\n    \"CampaignItemSupplierComments\": [\r\n        {\r\n            \"CampaignItemQuantityId\":{{0.CampaignItemQuantityId}} ,\r\n            \"CampaignItemSupplierId\": 0,\r\n            \"CampaignItemId\": {{cl_CampaignItemID}},\r\n            \"SupplierComments\": \"test\",\r\n            \"ReferenceNumber\": \"ERN111\",\r\n            \"CampaignItemSupplierCommentsId\": 0,\r\n            \"Active\": true\r\n        }\r\n    ],\r\n    \"CampaignItemSupplierCostPrices\": [\r\n        {\r\n            \"Active\": true,\r\n            \"CampaignItemId\": {{cl_CampaignItemID}},\r\n            \"CampaignItemQuantityId\": {{0.CampaignItemQuantityId}},\r\n            \"CampaignItemSupplierId\": 0,\r\n            \"CostId\": 8,\r\n            \"CurrencyId\": 8,\r\n            \"CostPrice\": 12345,\r\n            \"MaxQuantity\": 0,\r\n            \"CampaignItemSupplierCostPriceGuid\": \"00000000-0000-0000-0000-000000000000\",\r\n            \"CampaignItemSupplierCostPriceId\": 0,\r\n            \"IsStockedItem\": null\r\n        },\r\n        {\r\n            \"Active\": true,\r\n            \"CampaignItemId\": {{cl_CampaignItemID}},\r\n            \"CampaignItemQuantityId\": {{0.CampaignItemQuantityId}},\r\n            \"CampaignItemSupplierId\": 0,\r\n            \"CostId\": 2,\r\n            \"CurrencyId\": 8,\r\n            \"CostPrice\": 1234,\r\n            \"MaxQuantity\": 0,\r\n            \"CampaignItemSupplierCostPriceGuid\": \"00000000-0000-0000-0000-000000000000\",\r\n            \"CampaignItemSupplierCostPriceId\": 0,\r\n            \"IsStockedItem\": null\r\n        },\r\n\t\t {\r\n            \"Active\": true,\r\n            \"CampaignItemId\": {{cl_CampaignItemID}},\r\n            \"CampaignItemQuantityId\": {{0.CampaignItemQuantityId}},\r\n            \"CampaignItemSupplierId\": 0,\r\n            \"CostId\": 2,\r\n            \"CurrencyId\": 8,\r\n            \"CostPrice\": 1234,\r\n            \"MaxQuantity\": 0,\r\n            \"CampaignItemSupplierCostPriceGuid\": \"00000000-0000-0000-0000-000000000000\",\r\n            \"CampaignItemSupplierCostPriceId\": 0,\r\n            \"IsStockedItem\": null\r\n        }\r\n    ],\r\n    \"SupplierId\": 188,\r\n    \"SupplierName\": \"Paragon CC (Dagenham)\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/CampaignAPI/api/campaignitemsuppliercostprice",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"CampaignAPI",
+						"api",
+						"campaignitemsuppliercostprice"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ClickonManagePrice",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Get the JSON response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Function to recursively extract keys and values from the object\r",
+							"function extractKeysAndValues(obj, parentKey = '') {\r",
+							"    for (let key in obj) {\r",
+							"        if (obj.hasOwnProperty(key)) {\r",
+							"            let fullKey = parentKey ? `${parentKey}.${key}` : key;\r",
+							"            let value = obj[key];\r",
+							"            \r",
+							"            // Print the key and value to the console\r",
+							"            console.log(`${fullKey}: ${value}`);\r",
+							"            \r",
+							"            // Save the value to an environment variable for use in future requests\r",
+							"            pm.collectionVariables.set(fullKey, value);\r",
+							"            \r",
+							"            // If the value is an object, recursively call the function\r",
+							"            if (typeof value === 'object' && value !== null) {\r",
+							"                extractKeysAndValues(value, fullKey);\r",
+							"            }\r",
+							"        }\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"// Call the function with the response\r",
+							"extractKeysAndValues(response);\r",
+							"\r",
+							"pm.test(\"Successful GET request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{cl_AuthToken2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					},
+					{
+						"key": "id",
+						"value": "{{cl_UserId}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/CampaignAPI/api/campaignitemsuppliers/{{cl_CampaignItemID}}/{{cl_CampaignGuid}}/{{cl_CustomerGuid}}/manage-price",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"CampaignAPI",
+						"api",
+						"campaignitemsuppliers",
+						"{{cl_CampaignItemID}}",
+						"{{cl_CampaignGuid}}",
+						"{{cl_CustomerGuid}}",
+						"manage-price"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ClickonManageQuote",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{cl_AuthToken2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					},
+					{
+						"key": "id",
+						"value": "{{cl_UserId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"SupplierName\": \"{{0.SupplierName}}\",\r\n        \"SupplierId\": {{0.SupplierId}},\r\n        \"CampaignId\": {{cl_CampaignID}},\r\n        \"CampaignItemId\": {{cl_CampaignItemID}},\r\n        \"CampaignItemName\": \"{{0.CampaignItemName}}\",\r\n        \"Status\": \"{{0.Status}}\",\r\n        \"Approved\": true,\r\n        \"CampaignItemPricegroupId\": {{0.CampaignItemPricegroupId}},\r\n        \"CampaignItemSupplierId\": {{0.CampaignItemSupplierId}},\r\n        \"RejectedComments\": \"\",\r\n        \"IsOrdered\": null,\r\n        \"SupplierCostPrices\": [\r\n            {\r\n                \"SupplierComments\": \"{{0.SupplierCostPrices.0.SupplierComments}}\",\r\n                \"Quantity\": {{0.SupplierCostPrices.0.Quantity}},\r\n                \"CurrencySymbol\": \"{{0.SupplierCostPrices.0.CurrencySymbol}}\",\r\n                \"Checked\": true,\r\n                \"MinimumCost\": true,\r\n                \"ChangeCostPriceComments\": \"\",\r\n                \"campaignItemSupplierCostPriceHistory\": null,\r\n                \"CampaignCurrencySymbol\": \"{{0.SupplierCostPrices.0.CampaignCurrencySymbol}}\",\r\n                \"CampaignItemSupplierCostPriceId\": {{0.SupplierCostPrices.0.CampaignItemSupplierCostPriceId}},\r\n                \"CampaignItemSupplierCostPriceGuid\": \"{{0.SupplierCostPrices.0.CampaignItemSupplierCostPriceGuid}}\",\r\n                \"CampaignItemSupplierId\": {{0.SupplierCostPrices.0.CampaignItemSupplierId}},\r\n                \"CampaignItemId\": {{0.SupplierCostPrices.0.CampaignItemId}},\r\n                \"CostId\": {{0.SupplierCostPrices.0.CostId}},\r\n                \"CostPrice\": {{0.SupplierCostPrices.0.CostPrice}},\r\n                \"CurrencyId\": {{0.SupplierCostPrices.0.CurrencyId}},\r\n                \"ConvertedCurrencyID\": {{0.SupplierCostPrices.0.ConvertedCurrencyID}},\r\n                \"ConvertedCostPrice\": {{0.SupplierCostPrices.0.ConvertedCostPrice}},\r\n                \"CurrencyRateId\": null,\r\n                \"CampaignItemQuantityId\": {{0.SupplierCostPrices.0.CampaignItemQuantityId}},\r\n                \"MaxQuantity\": {{0.SupplierCostPrices.0.MaxQuantity}},\r\n                \"Version\": {{0.SupplierCostPrices.0.Version}},\r\n                \"ConversionRate\": {{0.SupplierCostPrices.0.ConversionRate}},\r\n                \"ConversionRateToGBP\": null,\r\n                \"Active\": true,\r\n                \"CreatedBy\": \"{{0.SupplierCostPrices.0.CreatedBy}}\",\r\n                \"CreatedOn\": \"{{0.SupplierCostPrices.0.CreatedOn}}\",\r\n                \"ModifiedBy\": null,\r\n                \"ModifiedOn\": null,\r\n                \"AgreedTandC\": null,\r\n                \"IsDistribution\": null,\r\n                \"CampaignItemDistributionLineId\": null,\r\n                \"ShippingDeliveryId\": null,\r\n                \"IncoTermId\": null,\r\n                \"NetWeight\": {{0.SupplierCostPrices.0.NetWeight}},\r\n                \"IsStockedItem\": null,\r\n                \"CampaignItemWarehouseStockLineId\": null,\r\n                \"ShippingDelivery\": null,\r\n                \"IncoTerms\": null,\r\n                \"CampaignItemSupplier\": null,\r\n                \"Cost\": null,\r\n                \"CampaignItem\": null,\r\n                \"Currency\": null,\r\n                \"ConvertedCurrency\": null,\r\n                \"CurrencyRate\": null,\r\n                \"CampaignItemQuantity\": null,\r\n                \"CampaignItemPrices\": null,\r\n                \"CampaignItemSupplierCostHistoryPrices\": null\r\n            }\r\n        ],\r\n        \"RebateComments\": \"\",\r\n        \"Submitted\": true\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/CampaignAPI/api/campaignitemselectedprice",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"CampaignAPI",
+						"api",
+						"campaignitemselectedprice"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ManageQuote",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Get the JSON response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Function to recursively extract keys and values from the object\r",
+							"function extractKeysAndValues(obj, parentKey = '') {\r",
+							"    for (let key in obj) {\r",
+							"        if (obj.hasOwnProperty(key)) {\r",
+							"            let fullKey = parentKey ? `${parentKey}.${key}` : key;\r",
+							"            let value = obj[key];\r",
+							"            \r",
+							"            // Print the key and value to the console\r",
+							"            console.log(`${fullKey}: ${value}`);\r",
+							"            \r",
+							"            // Save the value to an environment variable for use in future requests\r",
+							"            pm.collectionVariables.set(fullKey, value);\r",
+							"            \r",
+							"            // If the value is an object, recursively call the function\r",
+							"            if (typeof value === 'object' && value !== null) {\r",
+							"                extractKeysAndValues(value, fullKey);\r",
+							"            }\r",
+							"        }\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"// Call the function with the response\r",
+							"extractKeysAndValues(response);\r",
+							"\r",
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{cl_AuthToken2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "id",
+						"value": "{{cl_UserId}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"campaignGuid\": \"{{cl_CampaignGuid}}\",\r\n    \"SeletedCampaignItem\": [\r\n        {{cl_CampaignItemID}}\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/CampaignAPI/api/campaignitemprice/manage-quote",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"CampaignAPI",
+						"api",
+						"campaignitemprice",
+						"manage-quote"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ClickonCampaignPrice",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{cl_AuthToken2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					},
+					{
+						"key": "id",
+						"value": "{{cl_UserId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"CampaignItemId\": {{cl_CampaignItemID}},\r\n        \"CampaignId\": {{cl_CampaignID}},\r\n        \"CampaignItemReference\": \"{{CampaignItemReference}}\",\r\n        \"CampaignItemName\": \"{{CampaignItemName}}\",\r\n        \"CampaignItemPriceGroupId\": {{0.CampaignItemPriceGroupId}},\r\n        \"CampaignItemQuantityId\": {{0.CampaignItemQuantityId}},\r\n        \"Quantity\": {{0.SupplierCostPrices.0.Quantity}},\r\n        \"Supplier\": {\r\n            \"SupplierId\": {{0.SupplierId}},\r\n            \"SupplierGuid\": \"{{0.Supplier.SupplierGuid}}\",\r\n            \"SupplierName\": \"{{0.SupplierName}}\",\r\n            \"SupplierCode\": \"{{0.Supplier.SupplierCode}}\",\r\n            \"AddressLine1\": \"{{0.Supplier.AddressLine1}}\",\r\n            \"AddressLine2\": \"{{0.Supplier.AddressLine2}}\",\r\n            \"AddressLine3\": null,\r\n            \"AddressLine4\": null,\r\n            \"TownCity\": \"{{0.Supplier.TownCity}}\",\r\n            \"County\": \"{{0.Supplier.County}}\",\r\n            \"CountryId\": {{0.Supplier.CountryId}},\r\n            \"Postcode\": \"{{0.Supplier.Postcode}}\",\r\n            \"MultipleCurrency\": false,\r\n            \"Approved\": true,\r\n            \"InternalSupplier\": true,\r\n            \"Active\": true,\r\n            \"Rating\": null,\r\n            \"BusinessPhone\": null,\r\n            \"BusinessFax\": null,\r\n            \"BusinessEmail\": null,\r\n            \"Website\": \"{{0.Supplier.Website}}\",\r\n            \"VatNumber\": null,\r\n            \"POType\": null,\r\n            \"Check5dp\": false,\r\n            \"CreatedBy\": \"{{0.Supplier.CreatedBy}}\",\r\n            \"CreatedOn\": \"{{0.Supplier.CreatedOn}}\",\r\n            \"ModifiedBy\": null,\r\n            \"ModifiedOn\": null,\r\n            \"Deleted\": false,\r\n            \"RowVersion\": \"{{0.Supplier.RowVersion}}\",\r\n            \"PaymentTermTypeId\": null,\r\n            \"Rebate\": null,\r\n            \"NAVSupplier\": null,\r\n            \"RebateApplicable\": null,\r\n            \"ProofUpload\": null,\r\n            \"PaymentTermType\": null,\r\n            \"SupplierCategoryMappings\": null,\r\n            \"SupplierCurrencyMappings\": null,\r\n            \"SupplierAddresses\": null,\r\n            \"SupplierContacts\": null,\r\n            \"CampaignItemPOInformation\": null,\r\n            \"CampaignItemPrices\": null,\r\n            \"Country\": null,\r\n            \"SupplierCapabilityMappings\": null,\r\n            \"UserSupplierMappings\": null,\r\n            \"SupplierUserGroupMappings\": null,\r\n            \"SupplierBusinessUnitMappings\": null,\r\n            \"DistributionHeaders\": null,\r\n            \"SupplierRiskClassificationMappings\": null\r\n        },\r\n        \"CostPrice\": {{0.SupplierCostPrices.0.CostPrice}},\r\n        \"CostId\": null,\r\n        \"CostName\": null,\r\n        \"Markup\": {{0.Markup}},\r\n        \"MarkUpPer\": {{0.MarkUpPer}},\r\n        \"Margin\": {{0.Margin}},\r\n        \"MarginPer\": {{0.MarginPer}},\r\n        \"Profit\": 1481.3,\r\n        \"ConvertedProfit\": 1481.3,\r\n        \"ProfitPer\": 0,\r\n        \"SellPrice\": 16294.3,\r\n        \"ConvertedSellPrice\": 16294.3,\r\n        \"HighestPrice\": 14813,\r\n        \"AveragePrice\": 14813,\r\n        \"LowestPrice\": 14813,\r\n        \"CurrencyId\": 8,\r\n        \"ConvertedCurrencyID\": 8,\r\n        \"ConvertionRateId\": 1,\r\n        \"ConvertionRate\": 1,\r\n        \"CustomerAdditionalInformation\": null,\r\n        \"UserId\": \"87bcea9b-381f-4d17-a367-815c88b68f28\",\r\n        \"SupplierCurrencySumbol\": \"£\",\r\n        \"CampaignItemStatus\": \"{{0.CampaignItemStatus}}\",\r\n        \"CampaignItemSupplierId\": {{0.CampaignItemSupplierId}},\r\n        \"UnitSellPrice\": 146.7955,\r\n        \"UseSellPrice\": false,\r\n        \"ActualMarkup\": 10.000003375413492,\r\n        \"ActualMargin\": 9.090911880506935,\r\n        \"ActualProfit\": 1481.3005000000012,\r\n        \"ActualConvertedProfit\": 1481.3005000000012,\r\n        \"ActualSellPrice\": 16294.300500000001,\r\n        \"ActualConvertedSellPrice\": 16294.300500000001,\r\n        \"IsTransparentPricing\": false,\r\n        \"TransparentOption\": 0,\r\n        \"isManagementFeeVisible\": false,\r\n        \"ManagementFee\": 0,\r\n        \"isSurchargeVisible\": false,\r\n        \"Surcharge\": 0,\r\n        \"SellPriceIncludingFees\": 16294.3,\r\n        \"ConvertedSellPriceIncludingFees\": 16294.3,\r\n        \"SupplierRebateComments\": \"\",\r\n        \"SupplierId\": {{0.SupplierId}},\r\n        \"EstimatorCurrency\": null,\r\n        \"EstimatorCostPrice\": 0,\r\n        \"EstimatorConvertionRate\": null,\r\n        \"listItemPriceDetails\": [],\r\n        \"IsDistribution\": false,\r\n        \"IsStandardCost\": null,\r\n        \"Cost\": null,\r\n        \"isDisableMarkupCost\": false,\r\n        \"ConvertedCostPrice\": 14813,\r\n        \"CurrencySymbol\": \"£\",\r\n        \"status\": true,\r\n        \"isIncludingFeesVisible\": false,\r\n        \"Checked\": true,\r\n        \"UpdateSellPriceChecked\": false,\r\n        \"UpdatedSellPrice\": 16294.3\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/CampaignAPI/api/campaignitemprice",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"CampaignAPI",
+						"api",
+						"campaignitemprice"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ClickonQuoteManagment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Get the JSON response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Function to recursively extract keys and values from the object\r",
+							"function extractKeysAndValues(obj, parentKey = '') {\r",
+							"    for (let key in obj) {\r",
+							"        if (obj.hasOwnProperty(key)) {\r",
+							"            let fullKey = parentKey ? `${parentKey}.${key}` : key;\r",
+							"            let value = obj[key];\r",
+							"            \r",
+							"            // Print the key and value to the console\r",
+							"            console.log(`${fullKey}: ${value}`);\r",
+							"            \r",
+							"            // Save the value to an environment variable for use in future requests\r",
+							"            pm.collectionVariables.set(fullKey, value);\r",
+							"            \r",
+							"            // If the value is an object, recursively call the function\r",
+							"            if (typeof value === 'object' && value !== null) {\r",
+							"                extractKeysAndValues(value, fullKey);\r",
+							"            }\r",
+							"        }\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"// Call the function with the response\r",
+							"extractKeysAndValues(response);\r",
+							"\r",
+							"pm.test(\"Successful GET request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{cl_AuthToken2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					},
+					{
+						"key": "id",
+						"value": "{{cl_UserId}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/CampaignAPI/api/campaignsitemquote/{{cl_CampaignID}}/1/10/CreatedOn/asc/0/0/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"CampaignAPI",
+						"api",
+						"campaignsitemquote",
+						"{{cl_CampaignID}}",
+						"1",
+						"10",
+						"CreatedOn",
+						"asc",
+						"0",
+						"0",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ClickonQuoteCampaign",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Get the JSON response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Function to recursively extract keys and values from the object\r",
+							"function extractKeysAndValues(obj, parentKey = '') {\r",
+							"    for (let key in obj) {\r",
+							"        if (obj.hasOwnProperty(key)) {\r",
+							"            let fullKey = parentKey ? `${parentKey}.${key}` : key;\r",
+							"            let value = obj[key];\r",
+							"            \r",
+							"            // Print the key and value to the console\r",
+							"            console.log(`${fullKey}: ${value}`);\r",
+							"            \r",
+							"            // Save the value to an environment variable for use in future requests\r",
+							"            pm.collectionVariables.set(fullKey, value);\r",
+							"            \r",
+							"            // If the value is an object, recursively call the function\r",
+							"            if (typeof value === 'object' && value !== null) {\r",
+							"                extractKeysAndValues(value, fullKey);\r",
+							"            }\r",
+							"        }\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"// Call the function with the response\r",
+							"extractKeysAndValues(response);\r",
+							"\r",
+							"pm.test(\"Successful GET request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{cl_AuthToken2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					},
+					{
+						"key": "id",
+						"value": "{{cl_UserId}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/CampaignAPI/api/campaignsitemquote/{{Data.0.CampaignQuoteGuid}}/{{cl_CampaignID}}/{{cl_CustomerGuid}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"CampaignAPI",
+						"api",
+						"campaignsitemquote",
+						"{{Data.0.CampaignQuoteGuid}}",
+						"{{cl_CampaignID}}",
+						"{{cl_CustomerGuid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "QuoteAccept",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful PUT request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{cl_AuthToken2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					},
+					{
+						"key": "id",
+						"value": "{{cl_UserId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"CampaignItemQuoteId\": {{0.CampaignItemQuoteId}},\r\n        \"CampaignId\": {{cl_CampaignID}},\r\n        \"CampaignName\": \"{{cl_CampaignName}}\",\r\n        \"CampaignItemQuoteNo\": \"{{0.CampaignItemQuoteNo}}\",\r\n        \"CampaignItemQuoteGUID\": \"{{0.CampaignItemQuoteGUID}}\",\r\n        \"CampaignItemId\": {{cl_CampaignItemID}},\r\n        \"CampaignItemName\": \"{{cl_CampaignItemName}}\",\r\n        \"ConvertedSellprice\": {{0.ConvertedSellprice}},\r\n        \"Quantity\": {{0.Quantity}},\r\n        \"CampaignItemPricegroupId\": {{0.CampaignItemPricegroupId}},\r\n        \"QuoteStatus\": \"{{0.QuoteStatus}}\",\r\n        \"CampaignItemStatus\": \"{{0.CampaignItemStatus}}\",\r\n        \"RequestedBy\": \"{{0.RequestedBy}}\",\r\n        \"CurrencyConvertedSellPrice\": \"{{0.CurrencyConvertedSellPrice}}\",\r\n        \"Comments\": null,\r\n        \"CustomerName\": \"{{0.CustomerName}}\",\r\n        \"CustomerContact\": \" \",\r\n        \"Currency\": \"{{0.Currency}}\",\r\n        \"BusineesEntity\": \"{{0.BusineesEntity}}\",\r\n        \"BusineesEntityId\": {{0.BusineesEntityId}},\r\n        \"CampaignItemGuid\": \"{{cl_CampaignItemGuiD}}\",\r\n        \"CampaignItemSpecifications\": null,\r\n        \"CampaignItemReference\": \"{{0.CampaignItemReference}}\",\r\n        \"SupplierName\": \"{{cl_SupplierName}}\",\r\n        \"CostPrice\": 0,\r\n        \"ProductCategoryJsonSchemaMappingId\": null,\r\n        \"ProductCategory\": null,\r\n        \"CampaignGuid\": \"{{cl_CampaignGuid}}\",\r\n        \"SupplierId\": {{0.SupplierId}},\r\n        \"CampaignReference\": null,\r\n        \"CreatedOn\": \"{{0.CreatedOn}}\",\r\n        \"AccountManagerName\": null,\r\n        \"CampaignNumber\": null,\r\n        \"AccountManagerId\": null,\r\n        \"AccountManager\": null,\r\n        \"SupplierGuid\": \"{{0.SupplierGuid}}\",\r\n        \"CampaignItemPONumber\": null,\r\n        \"CampaignItemDeliveryDate\": null,\r\n        \"ConvertedCostPrice\": {{0.ConvertedCostPrice}},\r\n        \"CurrencyConvertedCostPrice\": null,\r\n        \"AdminPoNumber\": null,\r\n        \"MarkUp\": {{0.MarkUp}},\r\n        \"Margin\": {{0.Margin}},\r\n        \"CustomerGuid\": \"{{cl_CustomerGuid}}\",\r\n        \"InvoiceNumber\": null,\r\n        \"CurrencyId\": {{0.CurrencyId}},\r\n        \"SupplierReference\": null,\r\n        \"TransparentOption\": {{0.TransparentOption}},\r\n        \"POCurrencyCode\": null,\r\n        \"POCurrencySymbol\": \"{{0.POCurrencySymbol}}\",\r\n        \"POQuantity\": null,\r\n        \"POCostPrice\": null,\r\n        \"SupplierAliasName\": null,\r\n        \"BlanketPOId\": null,\r\n        \"BlanketPOValue\": null,\r\n        \"AvailableBlanketPOValue\": null,\r\n        \"CampaignInvoiceDetails\": null,\r\n        \"Currencys\": null,\r\n        \"ProofUpload\": false,\r\n        \"POGuid\": null,\r\n        \"BusinessUnitName\": null,\r\n        \"BusinessUnitId\": {{0.BusinessUnitId}},\r\n        \"PODetails\": null,\r\n        \"CampaignItemSupplierId\": {{0.CampaignItemSupplierId}},\r\n        \"CurrencySymbol\": \"£\",\r\n        \"ConvertedSellPriceExcludingAddFee\": 0,\r\n        \"ManagementFee\": 0,\r\n        \"SurCharge\": 0,\r\n        \"IsManagementFee\": false,\r\n        \"IsSurCharge\": false,\r\n        \"IsContainAddtionFee\": false,\r\n        \"DeliveredDate\": null,\r\n        \"campDeliveryDate\": null,\r\n        \"campDeliveredDate\": null,\r\n        \"DeliveryEmission\": 0,\r\n        \"CampaignItemQuantityId\": {{0.CampaignItemQuantityId}},\r\n        \"HasPOD\": null,\r\n        \"LineTrackingStatus\": null,\r\n        \"CustomerId\": 4,\r\n        \"Checked\": true,\r\n        \"DeclinedComments\": \"NA\",\r\n        \"CustomerReferenceFieldId\": 0\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/CampaignAPI/api/campaignsitemquote/updateReference",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"CampaignAPI",
+						"api",
+						"campaignsitemquote",
+						"updateReference"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "CampaignItemId",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemGuid",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemName",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemReference",
+			"value": ""
+		},
+		{
+			"key": "ProductCategoryId",
+			"value": ""
+		},
+		{
+			"key": "StockCode",
+			"value": ""
+		},
+		{
+			"key": "TrackingItemId",
+			"value": ""
+		},
+		{
+			"key": "SupplierName",
+			"value": ""
+		},
+		{
+			"key": "SupplierId",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemSupplierId",
+			"value": ""
+		},
+		{
+			"key": "CustomerGuid",
+			"value": ""
+		},
+		{
+			"key": "CampaignGuid",
+			"value": ""
+		},
+		{
+			"key": "CampaignName",
+			"value": ""
+		},
+		{
+			"key": "CampaignNumber",
+			"value": ""
+		},
+		{
+			"key": "CampaignID",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemGuiD",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemID",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemReFerence",
+			"value": ""
+		},
+		{
+			"key": "cl_AuthToken1",
+			"value": ""
+		},
+		{
+			"key": "cl_AuthToken2",
+			"value": ""
+		},
+		{
+			"key": "cl_CustomerGuid",
+			"value": ""
+		},
+		{
+			"key": "cl_CampaignGuid",
+			"value": ""
+		},
+		{
+			"key": "cl_CampaignName",
+			"value": ""
+		},
+		{
+			"key": "cl_CampaignNumber",
+			"value": ""
+		},
+		{
+			"key": "cl_CampaignID",
+			"value": ""
+		},
+		{
+			"key": "cl_CampaignItemID",
+			"value": ""
+		},
+		{
+			"key": "cl_CampaignItemGuiD",
+			"value": ""
+		},
+		{
+			"key": "cl_CampaignItemName",
+			"value": ""
+		},
+		{
+			"key": "cl_CampaignItemReFerence",
+			"value": ""
+		},
+		{
+			"key": "cl_ProductCategoryId",
+			"value": ""
+		},
+		{
+			"key": "cl_StockCode",
+			"value": ""
+		},
+		{
+			"key": "cl_TrackingItemId",
+			"value": ""
+		},
+		{
+			"key": "CampaignId",
+			"value": ""
+		},
+		{
+			"key": "PurchaseOrderNumber",
+			"value": ""
+		},
+		{
+			"key": "ParagonInvoiceNumber",
+			"value": ""
+		},
+		{
+			"key": "SpecificationValue",
+			"value": ""
+		},
+		{
+			"key": "ProductCategoryJsonSchemaMappingId",
+			"value": ""
+		},
+		{
+			"key": "ReferenceFieldValue",
+			"value": ""
+		},
+		{
+			"key": "CustomerReferenceFieldId",
+			"value": ""
+		},
+		{
+			"key": "ClaimOptionId",
+			"value": ""
+		},
+		{
+			"key": "ClaimTypeId",
+			"value": ""
+		},
+		{
+			"key": "IsFSC",
+			"value": ""
+		},
+		{
+			"key": "VATTypeId",
+			"value": ""
+		},
+		{
+			"key": "WorkfrontTemplateId",
+			"value": ""
+		},
+		{
+			"key": "CostCentreId",
+			"value": ""
+		},
+		{
+			"key": "SellOnCostCentreId",
+			"value": ""
+		},
+		{
+			"key": "ProductTypeId",
+			"value": ""
+		},
+		{
+			"key": "RowVersion",
+			"value": ""
+		},
+		{
+			"key": "SupplierAdditionalInformation",
+			"value": ""
+		},
+		{
+			"key": "CustomerAdditionalInformation",
+			"value": ""
+		},
+		{
+			"key": "Active",
+			"value": ""
+		},
+		{
+			"key": "IsOrdered",
+			"value": ""
+		},
+		{
+			"key": "HasPOD",
+			"value": ""
+		},
+		{
+			"key": "DeliveryTypeId",
+			"value": ""
+		},
+		{
+			"key": "DeliveryTypeOptionId",
+			"value": ""
+		},
+		{
+			"key": "CustomerAddressId",
+			"value": ""
+		},
+		{
+			"key": "DeliveryTypeOtherComments",
+			"value": ""
+		},
+		{
+			"key": "AdditionalDeliveryInstructions",
+			"value": ""
+		},
+		{
+			"key": "DeliveryDate",
+			"value": ""
+		},
+		{
+			"key": "CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "INVCreatedBy",
+			"value": ""
+		},
+		{
+			"key": "INVCreatedDate",
+			"value": ""
+		},
+		{
+			"key": "InvoiceNumber",
+			"value": ""
+		},
+		{
+			"key": "CommodityCode",
+			"value": ""
+		},
+		{
+			"key": "TransparentPricing",
+			"value": ""
+		},
+		{
+			"key": "IsBlanketPO",
+			"value": ""
+		},
+		{
+			"key": "BlanketPOId",
+			"value": ""
+		},
+		{
+			"key": "IsDistribution",
+			"value": ""
+		},
+		{
+			"key": "IsStockedItem",
+			"value": ""
+		},
+		{
+			"key": "ValuationTypeId",
+			"value": ""
+		},
+		{
+			"key": "CompanyId",
+			"value": ""
+		},
+		{
+			"key": "AvailableBlanketPOValue",
+			"value": ""
+		},
+		{
+			"key": "ExternalReferenceItemNumber",
+			"value": ""
+		},
+		{
+			"key": "Reference",
+			"value": ""
+		},
+		{
+			"key": "AuditReference",
+			"value": ""
+		},
+		{
+			"key": "AuditApplicable",
+			"value": ""
+		},
+		{
+			"key": "Campaign",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CampaignId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CampaignGuid",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CustomerId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.AccountManagerId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CampaignSettingId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CurrencyId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CustomerEntityId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CustomerContactId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.SalesRepresentativeId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.BusinessUnitId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CampaignName",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CampaignNumber",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CampaignReference",
+			"value": ""
+		},
+		{
+			"key": "Campaign.PurchaseOrderNumber",
+			"value": ""
+		},
+		{
+			"key": "Campaign.PurchaseOrderValue",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CampaignDeliveryDate",
+			"value": ""
+		},
+		{
+			"key": "Campaign.JobDeliveryDate",
+			"value": ""
+		},
+		{
+			"key": "Campaign.IsTransparent",
+			"value": ""
+		},
+		{
+			"key": "Campaign.IsFSC",
+			"value": ""
+		},
+		{
+			"key": "Campaign.TrackingStatusId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.ReferenceFieldValue",
+			"value": ""
+		},
+		{
+			"key": "Campaign.VATTypeId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CostCentreId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.SellOnCostCentreId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.ProductTypeId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.RowVersion",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Active",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "Campaign.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "Campaign.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Comments",
+			"value": ""
+		},
+		{
+			"key": "Campaign.BusinessUnitVATRegistrationMappingId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.IsRebateApplicable",
+			"value": ""
+		},
+		{
+			"key": "Campaign.RebatePercentage",
+			"value": ""
+		},
+		{
+			"key": "Campaign.RebateComments",
+			"value": ""
+		},
+		{
+			"key": "Campaign.ExternalReferenceNumber",
+			"value": ""
+		},
+		{
+			"key": "Campaign.TransparentPricing",
+			"value": ""
+		},
+		{
+			"key": "Campaign.IsBlanketPO",
+			"value": ""
+		},
+		{
+			"key": "Campaign.BlanketPOId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.AvailableBlanketPOValue",
+			"value": ""
+		},
+		{
+			"key": "Campaign.ApplicationGuid",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CustomerId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CustomerGuid",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CustomerName",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.Margin",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.LogoPath",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.IsTransparent",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.IsHideLogo",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.ProofsEnabled",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CampaignSettingId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.Active",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.QuotePONumberRequired",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.IsPONumberMandatory",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CampaignSetting",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.Campaigns",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CustomerAddresses",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CustomerCurrencyMappings",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CustomFields",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CustomerReferenceFields",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CustomerEntities",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.Users",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.EmailDomains",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CustomerConfigurationKeyValues",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CustomerUserGroupMappings",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CustomerSalesRepresentativeMappings",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.ProductCategoryJsonSchemaMappings",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.ApprovalLimits",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CampaignItemPOInformation",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CostCentrePageMapping",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.SellOnCostCentrePageMappings",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.ProductTypePageMappings",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.UserCustomerMappings",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CurrencyRates",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CustomerProductCategoryJsonSchemaMappings",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.UserCustomerEntityMappings",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.BlanketPO",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.TemplateGroups",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.CustomerEntityBusinessUnitMappings",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.Decisions",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Customer.TemplateCustomerMappings",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CampaignSetting",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Currency",
+			"value": ""
+		},
+		{
+			"key": "Campaign.AccountManager",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CustomerContact",
+			"value": ""
+		},
+		{
+			"key": "Campaign.BusinessUnit",
+			"value": ""
+		},
+		{
+			"key": "Campaign.TrackingStatus",
+			"value": ""
+		},
+		{
+			"key": "Campaign.VATType",
+			"value": ""
+		},
+		{
+			"key": "Campaign.SellOnCostCentres",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CampaignItems",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CampaignItemPOApprovalInformations",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CampaignItemQuotes",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CampaignItemPOInformation",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CampaignItemPrices",
+			"value": ""
+		},
+		{
+			"key": "Campaign.BusinessUnitVATRegistrationMapping",
+			"value": ""
+		},
+		{
+			"key": "Campaign.IsArchived",
+			"value": ""
+		},
+		{
+			"key": "Campaign.BrandId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.Brand",
+			"value": ""
+		},
+		{
+			"key": "Campaign.IsDistribution",
+			"value": ""
+		},
+		{
+			"key": "Campaign.DistributionHeaders",
+			"value": ""
+		},
+		{
+			"key": "Campaign.OrderTrackingStatusId",
+			"value": ""
+		},
+		{
+			"key": "Campaign.IsCompleted",
+			"value": ""
+		},
+		{
+			"key": "Campaign.OrderTrackingStatus",
+			"value": ""
+		},
+		{
+			"key": "Campaign.CampaignItemDistributionLines",
+			"value": ""
+		},
+		{
+			"key": "Campaign.IsCarbonCalculator",
+			"value": ""
+		},
+		{
+			"key": "ProductCategory",
+			"value": ""
+		},
+		{
+			"key": "ProductCategory.ProductCategoryId",
+			"value": ""
+		},
+		{
+			"key": "ProductCategory.ProductCategoryGuid",
+			"value": ""
+		},
+		{
+			"key": "ProductCategory.ProductCategoryName",
+			"value": ""
+		},
+		{
+			"key": "ProductCategory.ProductCategoryDescription",
+			"value": ""
+		},
+		{
+			"key": "ProductCategory.ProductCategoryLogoPath",
+			"value": ""
+		},
+		{
+			"key": "ProductCategory.Active",
+			"value": ""
+		},
+		{
+			"key": "ProductCategory.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "ProductCategory.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "ProductCategory.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "ProductCategory.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "ProductCategory.BusinessUnitId",
+			"value": ""
+		},
+		{
+			"key": "ProductCategory.ProductCategoryJsonSchemaMappings",
+			"value": ""
+		},
+		{
+			"key": "ProductCategory.CampaignItems",
+			"value": ""
+		},
+		{
+			"key": "ProductCategory.ProductCategoryCostMappings",
+			"value": ""
+		},
+		{
+			"key": "ProductCategory.ProductCategoryScheduleTypeMappings",
+			"value": ""
+		},
+		{
+			"key": "ProductCategory.ProductCategoryCriteriaValues",
+			"value": ""
+		},
+		{
+			"key": "ProductCategory.BusinessUnit",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingItemId",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingItemGuid",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.Description",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingHeaderId",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingStatusId",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.Sequence",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.RowVersion",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.Active",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingHeader",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingStatus",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingStatus.TrackingStatusId",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingStatus.TrackingStatusGuid",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingStatus.Name",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingStatus.Description",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingStatus.RowVersion",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingStatus.Active",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingStatus.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingStatus.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingStatus.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingStatus.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingStatus.Campaigns",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingStatus.OrderCampaigns",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingStatus.CampaignItemSuppliers",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingStatus.CampaignItemPOInformations",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingStatus.TrackingStatusRankings",
+			"value": ""
+		},
+		{
+			"key": "TrackingItem.TrackingStatus.OrderTrackingStatusRankings",
+			"value": ""
+		},
+		{
+			"key": "ClaimOption",
+			"value": ""
+		},
+		{
+			"key": "ClaimOption.ClaimOptionId",
+			"value": ""
+		},
+		{
+			"key": "ClaimOption.ClaimOptionGuid",
+			"value": ""
+		},
+		{
+			"key": "ClaimOption.ClaimOptionName",
+			"value": ""
+		},
+		{
+			"key": "ClaimOption.Active",
+			"value": ""
+		},
+		{
+			"key": "ClaimOption.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "ClaimOption.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "ClaimOption.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "ClaimOption.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "ClaimOption.ClaimTypes",
+			"value": ""
+		},
+		{
+			"key": "ClaimOption.CampaignItems",
+			"value": ""
+		},
+		{
+			"key": "ClaimType",
+			"value": ""
+		},
+		{
+			"key": "VATType",
+			"value": ""
+		},
+		{
+			"key": "ProductCategoryJsonSchemaMapping",
+			"value": ""
+		},
+		{
+			"key": "CustomerReferenceField",
+			"value": ""
+		},
+		{
+			"key": "DeliveryTypes",
+			"value": ""
+		},
+		{
+			"key": "DeliveryTypeOptions",
+			"value": ""
+		},
+		{
+			"key": "CustomerAddresses",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemQuantities",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemQuantities.0",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemQuantities.0.CampaignItemQuantityId",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemQuantities.0.CampaignItemQuantityGuid",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemQuantities.0.CampaignItemId",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemQuantities.0.Quantity",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemQuantities.0.IsRunOnQuantity",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemQuantities.0.RowVersion",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemQuantities.0.CustomerAdditionalInformation",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemQuantities.0.Active",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemQuantities.0.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemQuantities.0.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemQuantities.0.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemQuantities.0.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemQuantities.0.CampaignItemSupplierCostPrices",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemQuantities.0.CampaignItemSupplierComments",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemQuantities.0.CampaignItemPrices",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemSuppliers",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.CampaignItemCostMappingId",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.CampaignItemCostMappingGuid",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.CampaignItemId",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.CostId",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.DisplayOrder",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.Active",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.Cost",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.Cost.CostId",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.Cost.CostGuid",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.Cost.CostName",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.Cost.IsStandardCost",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.Cost.SortOrder",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.Cost.Active",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.Cost.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.Cost.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.Cost.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.Cost.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.Cost.ProductCategoryCostMappings",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.Cost.CampaignItemCostMappings",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.Cost.CampaignItemSupplierCostPrices",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.0.Cost.CampaignItemPrices",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.CampaignItemCostMappingId",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.CampaignItemCostMappingGuid",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.CampaignItemId",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.CostId",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.DisplayOrder",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.Active",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.Cost",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.Cost.CostId",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.Cost.CostGuid",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.Cost.CostName",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.Cost.IsStandardCost",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.Cost.SortOrder",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.Cost.Active",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.Cost.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.Cost.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.Cost.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.Cost.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.Cost.ProductCategoryCostMappings",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.Cost.CampaignItemCostMappings",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.Cost.CampaignItemSupplierCostPrices",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.1.Cost.CampaignItemPrices",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.CampaignItemCostMappingId",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.CampaignItemCostMappingGuid",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.CampaignItemId",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.CostId",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.DisplayOrder",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.Active",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.Cost",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.Cost.CostId",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.Cost.CostGuid",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.Cost.CostName",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.Cost.IsStandardCost",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.Cost.SortOrder",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.Cost.Active",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.Cost.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.Cost.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.Cost.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.Cost.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.Cost.ProductCategoryCostMappings",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.Cost.CampaignItemCostMappings",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.Cost.CampaignItemSupplierCostPrices",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemCostMappings.2.Cost.CampaignItemPrices",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemSupplierCostPrices",
+			"value": ""
+		},
+		{
+			"key": "SupportingDocuments",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemSupplierComments",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemPOApprovalInformations",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemPOCreationDetails",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemQuotes",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemPOInformation",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemPrices",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemScheduleTypesMappings",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemInvoiceDetails",
+			"value": ""
+		},
+		{
+			"key": "SellOnCostCentre",
+			"value": ""
+		},
+		{
+			"key": "ProductType",
+			"value": ""
+		},
+		{
+			"key": "CostCentre",
+			"value": ""
+		},
+		{
+			"key": "DataAllocation",
+			"value": ""
+		},
+		{
+			"key": "FSCLevelOneId",
+			"value": ""
+		},
+		{
+			"key": "FSCLevelTwoId",
+			"value": ""
+		},
+		{
+			"key": "FSCLevelThreeId",
+			"value": ""
+		},
+		{
+			"key": "FSCLevelOne",
+			"value": ""
+		},
+		{
+			"key": "FSCLevelTwo",
+			"value": ""
+		},
+		{
+			"key": "FSCLevelThree",
+			"value": ""
+		},
+		{
+			"key": "BlanketPO",
+			"value": ""
+		},
+		{
+			"key": "BrandId",
+			"value": ""
+		},
+		{
+			"key": "CustomerContactId",
+			"value": ""
+		},
+		{
+			"key": "Brands",
+			"value": ""
+		},
+		{
+			"key": "Quantity",
+			"value": ""
+		},
+		{
+			"key": "NetWeight",
+			"value": ""
+		},
+		{
+			"key": "SellPrice",
+			"value": ""
+		},
+		{
+			"key": "isLogisticService",
+			"value": ""
+		},
+		{
+			"key": "LineTypeId",
+			"value": ""
+		},
+		{
+			"key": "TagParent",
+			"value": ""
+		},
+		{
+			"key": "isLogisticServiceChild",
+			"value": ""
+		},
+		{
+			"key": "ReferenceGroupId",
+			"value": ""
+		},
+		{
+			"key": "ShippingDeliveryId",
+			"value": ""
+		},
+		{
+			"key": "FromAlpha2Code",
+			"value": ""
+		},
+		{
+			"key": "DistributionLines",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemProofs",
+			"value": ""
+		},
+		{
+			"key": "WorkfrontTemplate",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemReferences",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemDistributionLines",
+			"value": ""
+		},
+		{
+			"key": "CampaignItemWarehouseStockLines",
+			"value": ""
+		},
+		{
+			"key": "valuationType",
+			"value": ""
+		},
+		{
+			"key": "company",
+			"value": ""
+		},
+		{
+			"key": "timestamp1",
+			"value": ""
+		},
+		{
+			"key": "cl_CampaignItemQuantityId",
+			"value": ""
+		},
+		{
+			"key": "cl_CampaignItemQuantityGuid",
+			"value": ""
+		},
+		{
+			"key": "cl_CampaignItemQuoteNo",
+			"value": ""
+		},
+		{
+			"key": "cl_CampaignQuoteGuid",
+			"value": ""
+		},
+		{
+			"key": "cl_SupplierName",
+			"value": ""
+		},
+		{
+			"key": "cl_SupplierId",
+			"value": ""
+		},
+		{
+			"key": "cl_CampaignItemSupplierId",
+			"value": ""
+		},
+		{
+			"key": "0",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierName",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierId",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignId",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItemId",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItemName",
+			"value": ""
+		},
+		{
+			"key": "0.Status",
+			"value": ""
+		},
+		{
+			"key": "0.Approved",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItemPricegroupId",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItemSupplierId",
+			"value": ""
+		},
+		{
+			"key": "0.RejectedComments",
+			"value": ""
+		},
+		{
+			"key": "0.IsOrdered",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.SupplierComments",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.Quantity",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CurrencySymbol",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.Checked",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.MinimumCost",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.ChangeCostPriceComments",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.campaignItemSupplierCostPriceHistory",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CampaignCurrencySymbol",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CampaignItemSupplierCostPriceId",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CampaignItemSupplierCostPriceGuid",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CampaignItemSupplierId",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CampaignItemId",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CostId",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CostPrice",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CurrencyId",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.ConvertedCurrencyID",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.ConvertedCostPrice",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CurrencyRateId",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CampaignItemQuantityId",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.MaxQuantity",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.Version",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.ConversionRate",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.ConversionRateToGBP",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.Active",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.AgreedTandC",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.IsDistribution",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CampaignItemDistributionLineId",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.ShippingDeliveryId",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.IncoTermId",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.NetWeight",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.IsStockedItem",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CampaignItemWarehouseStockLineId",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.ShippingDelivery",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.IncoTerms",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CampaignItemSupplier",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.Cost",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CampaignItem",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.Currency",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.ConvertedCurrency",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CurrencyRate",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CampaignItemQuantity",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CampaignItemPrices",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCostPrices.0.CampaignItemSupplierCostHistoryPrices",
+			"value": ""
+		},
+		{
+			"key": "0.RebateComments",
+			"value": ""
+		},
+		{
+			"key": "Data",
+			"value": ""
+		},
+		{
+			"key": "Data.0",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignName",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignNumber",
+			"value": ""
+		},
+		{
+			"key": "Data.0.AccountManagerName",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CustomerContact",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ItemQuoteCampaignItemsCount",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignGuid",
+			"value": ""
+		},
+		{
+			"key": "Data.0.AccountManagerId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CustomerContactId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BusinessUnitName",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BusinessUnitId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CustomerName",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CustomerGuid",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CustomerId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemQuoteNo",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItems",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.TemplateCode",
+			"value": ""
+		},
+		{
+			"key": "Data.0.OriginatorId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignQuoteGuid",
+			"value": ""
+		},
+		{
+			"key": "Page",
+			"value": ""
+		},
+		{
+			"key": "PageSize",
+			"value": ""
+		},
+		{
+			"key": "TotalRecords",
+			"value": ""
+		},
+		{
+			"key": "TotalPages",
+			"value": ""
+		},
+		{
+			"key": "SortColumn",
+			"value": ""
+		},
+		{
+			"key": "SortOrder",
+			"value": ""
+		},
+		{
+			"key": "UserTypeList",
+			"value": ""
+		},
+		{
+			"key": "TypeList",
+			"value": ""
+		},
+		{
+			"key": "Anonymous",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItemQuantityId",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItemQuantityGuid",
+			"value": ""
+		},
+		{
+			"key": "0.Quantity",
+			"value": ""
+		},
+		{
+			"key": "0.IsRunOnQuantity",
+			"value": ""
+		},
+		{
+			"key": "0.RowVersion",
+			"value": ""
+		},
+		{
+			"key": "0.CustomerAdditionalInformation",
+			"value": ""
+		},
+		{
+			"key": "0.Active",
+			"value": ""
+		},
+		{
+			"key": "0.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "0.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "0.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "0.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItem",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItemSupplierCostPrices",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItemSupplierComments",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItemPrices",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItemReference",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItemPriceGroupId",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.SupplierId",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.SupplierGuid",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.SupplierName",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.SupplierCode",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.AddressLine1",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.AddressLine2",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.AddressLine3",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.AddressLine4",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.TownCity",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.County",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.CountryId",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.Postcode",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.MultipleCurrency",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.Approved",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.InternalSupplier",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.Active",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.Rating",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.BusinessPhone",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.BusinessFax",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.BusinessEmail",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.Website",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.VatNumber",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.POType",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.Check5dp",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.Deleted",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.RowVersion",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.PaymentTermTypeId",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.Rebate",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.NAVSupplier",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.RebateApplicable",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.ProofUpload",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.PaymentTermType",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.SupplierCategoryMappings",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.SupplierCurrencyMappings",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.SupplierAddresses",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.SupplierContacts",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.CampaignItemPOInformation",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.CampaignItemPrices",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.Country",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.SupplierCapabilityMappings",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.UserSupplierMappings",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.SupplierUserGroupMappings",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.SupplierBusinessUnitMappings",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.DistributionHeaders",
+			"value": ""
+		},
+		{
+			"key": "0.Supplier.SupplierRiskClassificationMappings",
+			"value": ""
+		},
+		{
+			"key": "0.CostPrice",
+			"value": ""
+		},
+		{
+			"key": "0.CostId",
+			"value": ""
+		},
+		{
+			"key": "0.CostName",
+			"value": ""
+		},
+		{
+			"key": "0.Markup",
+			"value": ""
+		},
+		{
+			"key": "0.MarkUpPer",
+			"value": ""
+		},
+		{
+			"key": "0.Margin",
+			"value": ""
+		},
+		{
+			"key": "0.MarginPer",
+			"value": ""
+		},
+		{
+			"key": "0.Profit",
+			"value": ""
+		},
+		{
+			"key": "0.ConvertedProfit",
+			"value": ""
+		},
+		{
+			"key": "0.ProfitPer",
+			"value": ""
+		},
+		{
+			"key": "0.SellPrice",
+			"value": ""
+		},
+		{
+			"key": "0.ConvertedSellPrice",
+			"value": ""
+		},
+		{
+			"key": "0.HighestPrice",
+			"value": ""
+		},
+		{
+			"key": "0.AveragePrice",
+			"value": ""
+		},
+		{
+			"key": "0.LowestPrice",
+			"value": ""
+		},
+		{
+			"key": "0.CurrencyId",
+			"value": ""
+		},
+		{
+			"key": "0.ConvertedCurrencyID",
+			"value": ""
+		},
+		{
+			"key": "0.ConvertionRateId",
+			"value": ""
+		},
+		{
+			"key": "0.ConvertionRate",
+			"value": ""
+		},
+		{
+			"key": "0.UserId",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierCurrencySumbol",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItemStatus",
+			"value": ""
+		},
+		{
+			"key": "0.UnitSellPrice",
+			"value": ""
+		},
+		{
+			"key": "0.UseSellPrice",
+			"value": ""
+		},
+		{
+			"key": "0.ActualMarkup",
+			"value": ""
+		},
+		{
+			"key": "0.ActualMargin",
+			"value": ""
+		},
+		{
+			"key": "0.ActualProfit",
+			"value": ""
+		},
+		{
+			"key": "0.ActualConvertedProfit",
+			"value": ""
+		},
+		{
+			"key": "0.ActualSellPrice",
+			"value": ""
+		},
+		{
+			"key": "0.ActualConvertedSellPrice",
+			"value": ""
+		},
+		{
+			"key": "0.IsTransparentPricing",
+			"value": ""
+		},
+		{
+			"key": "0.TransparentOption",
+			"value": ""
+		},
+		{
+			"key": "0.isManagementFeeVisible",
+			"value": ""
+		},
+		{
+			"key": "0.ManagementFee",
+			"value": ""
+		},
+		{
+			"key": "0.isSurchargeVisible",
+			"value": ""
+		},
+		{
+			"key": "0.Surcharge",
+			"value": ""
+		},
+		{
+			"key": "0.SellPriceIncludingFees",
+			"value": ""
+		},
+		{
+			"key": "0.ConvertedSellPriceIncludingFees",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierRebateComments",
+			"value": ""
+		},
+		{
+			"key": "0.EstimatorCurrency",
+			"value": ""
+		},
+		{
+			"key": "0.EstimatorCostPrice",
+			"value": ""
+		},
+		{
+			"key": "0.EstimatorConvertionRate",
+			"value": ""
+		},
+		{
+			"key": "0.listItemPriceDetails",
+			"value": ""
+		},
+		{
+			"key": "0.IsDistribution",
+			"value": ""
+		},
+		{
+			"key": "0.IsStandardCost",
+			"value": ""
+		},
+		{
+			"key": "0.Cost",
+			"value": ""
+		},
+		{
+			"key": "0.isDisableMarkupCost",
+			"value": ""
+		},
+		{
+			"key": "0.ConvertedCostPrice",
+			"value": ""
+		},
+		{
+			"key": "0.CurrencySymbol",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItemQuoteId",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignName",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItemQuoteNo",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItemQuoteGUID",
+			"value": ""
+		},
+		{
+			"key": "0.ConvertedSellprice",
+			"value": ""
+		},
+		{
+			"key": "0.QuoteStatus",
+			"value": ""
+		},
+		{
+			"key": "0.RequestedBy",
+			"value": ""
+		},
+		{
+			"key": "0.CurrencyConvertedSellPrice",
+			"value": ""
+		},
+		{
+			"key": "0.Comments",
+			"value": ""
+		},
+		{
+			"key": "0.CustomerName",
+			"value": ""
+		},
+		{
+			"key": "0.CustomerContact",
+			"value": ""
+		},
+		{
+			"key": "0.Currency",
+			"value": ""
+		},
+		{
+			"key": "0.BusineesEntity",
+			"value": ""
+		},
+		{
+			"key": "0.BusineesEntityId",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItemGuid",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItemSpecifications",
+			"value": ""
+		},
+		{
+			"key": "0.ProductCategoryJsonSchemaMappingId",
+			"value": ""
+		},
+		{
+			"key": "0.ProductCategory",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignGuid",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignReference",
+			"value": ""
+		},
+		{
+			"key": "0.AccountManagerName",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignNumber",
+			"value": ""
+		},
+		{
+			"key": "0.AccountManagerId",
+			"value": ""
+		},
+		{
+			"key": "0.AccountManager",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierGuid",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItemPONumber",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignItemDeliveryDate",
+			"value": ""
+		},
+		{
+			"key": "0.CurrencyConvertedCostPrice",
+			"value": ""
+		},
+		{
+			"key": "0.AdminPoNumber",
+			"value": ""
+		},
+		{
+			"key": "0.MarkUp",
+			"value": ""
+		},
+		{
+			"key": "0.CustomerGuid",
+			"value": ""
+		},
+		{
+			"key": "0.InvoiceNumber",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierReference",
+			"value": ""
+		},
+		{
+			"key": "0.POCurrencyCode",
+			"value": ""
+		},
+		{
+			"key": "0.POCurrencySymbol",
+			"value": ""
+		},
+		{
+			"key": "0.POQuantity",
+			"value": ""
+		},
+		{
+			"key": "0.POCostPrice",
+			"value": ""
+		},
+		{
+			"key": "0.SupplierAliasName",
+			"value": ""
+		},
+		{
+			"key": "0.BlanketPOId",
+			"value": ""
+		},
+		{
+			"key": "0.BlanketPOValue",
+			"value": ""
+		},
+		{
+			"key": "0.AvailableBlanketPOValue",
+			"value": ""
+		},
+		{
+			"key": "0.CampaignInvoiceDetails",
+			"value": ""
+		},
+		{
+			"key": "0.Currencys",
+			"value": ""
+		},
+		{
+			"key": "0.ProofUpload",
+			"value": ""
+		},
+		{
+			"key": "0.POGuid",
+			"value": ""
+		},
+		{
+			"key": "0.BusinessUnitName",
+			"value": ""
+		},
+		{
+			"key": "0.BusinessUnitId",
+			"value": ""
+		},
+		{
+			"key": "0.PODetails",
+			"value": ""
+		},
+		{
+			"key": "0.ConvertedSellPriceExcludingAddFee",
+			"value": ""
+		},
+		{
+			"key": "0.SurCharge",
+			"value": ""
+		},
+		{
+			"key": "0.IsManagementFee",
+			"value": ""
+		},
+		{
+			"key": "0.IsSurCharge",
+			"value": ""
+		},
+		{
+			"key": "0.IsContainAddtionFee",
+			"value": ""
+		},
+		{
+			"key": "0.DeliveredDate",
+			"value": ""
+		},
+		{
+			"key": "0.campDeliveryDate",
+			"value": ""
+		},
+		{
+			"key": "0.campDeliveredDate",
+			"value": ""
+		},
+		{
+			"key": "0.DeliveryEmission",
+			"value": ""
+		},
+		{
+			"key": "0.HasPOD",
+			"value": ""
+		},
+		{
+			"key": "0.LineTrackingStatus",
+			"value": ""
+		},
+		{
+			"key": "Data.0.Quantities",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ProductCategoryName",
+			"value": ""
+		},
+		{
+			"key": "Data.0.JobStatus",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemStatus",
+			"value": ""
+		},
+		{
+			"key": "Data.0.HasQuantity",
+			"value": ""
+		},
+		{
+			"key": "Data.0.HasCreated",
+			"value": ""
+		},
+		{
+			"key": "Data.0.SuppliersAssigned",
+			"value": ""
+		},
+		{
+			"key": "Data.0.SuppliersSubmitted",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CreatedByUser",
+			"value": ""
+		},
+		{
+			"key": "Data.0.Cost",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignNumberBreadcrumb",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CustomerGuId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CurrencyCode",
+			"value": ""
+		},
+		{
+			"key": "Data.0.IsOrdered",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CustomerEntityId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.Checked",
+			"value": ""
+		},
+		{
+			"key": "Data.0.InvoiceNumber",
+			"value": ""
+		},
+		{
+			"key": "Data.0.IsDistribution",
+			"value": ""
+		},
+		{
+			"key": "Data.0.StockCode",
+			"value": ""
+		},
+		{
+			"key": "Data.0.isLogisticService",
+			"value": ""
+		},
+		{
+			"key": "Data.0.LineTypeId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.TagParent",
+			"value": ""
+		},
+		{
+			"key": "Data.0.isLogisticServiceChild",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ReferenceGroupId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ShippingDeliveryId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.FromAlpha2Code",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemGuid",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemName",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemReference",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ProductCategoryId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.TrackingItemId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.PurchaseOrderNumber",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ParagonInvoiceNumber",
+			"value": ""
+		},
+		{
+			"key": "Data.0.SpecificationValue",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ProductCategoryJsonSchemaMappingId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ReferenceFieldValue",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CustomerReferenceFieldId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ClaimOptionId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ClaimTypeId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.IsFSC",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VATTypeId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.WorkfrontTemplateId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CostCentreId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.SellOnCostCentreId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ProductTypeId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.RowVersion",
+			"value": ""
+		},
+		{
+			"key": "Data.0.SupplierAdditionalInformation",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CustomerAdditionalInformation",
+			"value": ""
+		},
+		{
+			"key": "Data.0.Active",
+			"value": ""
+		},
+		{
+			"key": "Data.0.HasPOD",
+			"value": ""
+		},
+		{
+			"key": "Data.0.DeliveryTypeId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.DeliveryTypeOptionId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CustomerAddressId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.DeliveryTypeOtherComments",
+			"value": ""
+		},
+		{
+			"key": "Data.0.AdditionalDeliveryInstructions",
+			"value": ""
+		},
+		{
+			"key": "Data.0.DeliveryDate",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.INVCreatedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.INVCreatedDate",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CommodityCode",
+			"value": ""
+		},
+		{
+			"key": "Data.0.TransparentPricing",
+			"value": ""
+		},
+		{
+			"key": "Data.0.IsBlanketPO",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.IsStockedItem",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ValuationTypeId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CompanyId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.AvailableBlanketPOValue",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ExternalReferenceItemNumber",
+			"value": ""
+		},
+		{
+			"key": "Data.0.Reference",
+			"value": ""
+		},
+		{
+			"key": "Data.0.AuditReference",
+			"value": ""
+		},
+		{
+			"key": "Data.0.AuditApplicable",
+			"value": ""
+		},
+		{
+			"key": "Data.0.Campaign",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ProductCategory",
+			"value": ""
+		},
+		{
+			"key": "Data.0.TrackingItem",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ClaimOption",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ClaimType",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VATType",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ProductCategoryJsonSchemaMapping",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CustomerReferenceField",
+			"value": ""
+		},
+		{
+			"key": "Data.0.DeliveryTypes",
+			"value": ""
+		},
+		{
+			"key": "Data.0.DeliveryTypeOptions",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CustomerAddresses",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemQuantities",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemSuppliers",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemCostMappings",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemSupplierCostPrices",
+			"value": ""
+		},
+		{
+			"key": "Data.0.SupportingDocuments",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemSupplierComments",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemPOApprovalInformations",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemPOCreationDetails",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemQuotes",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemPOInformation",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemPrices",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemScheduleTypesMappings",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemInvoiceDetails",
+			"value": ""
+		},
+		{
+			"key": "Data.0.SellOnCostCentre",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ProductType",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CostCentre",
+			"value": ""
+		},
+		{
+			"key": "Data.0.DataAllocation",
+			"value": ""
+		},
+		{
+			"key": "Data.0.FSCLevelOneId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.FSCLevelTwoId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.FSCLevelThreeId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.FSCLevelOne",
+			"value": ""
+		},
+		{
+			"key": "Data.0.FSCLevelTwo",
+			"value": ""
+		},
+		{
+			"key": "Data.0.FSCLevelThree",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPO",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BrandId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.Brands",
+			"value": ""
+		},
+		{
+			"key": "Data.0.Quantity",
+			"value": ""
+		},
+		{
+			"key": "Data.0.NetWeight",
+			"value": ""
+		},
+		{
+			"key": "Data.0.SellPrice",
+			"value": ""
+		},
+		{
+			"key": "Data.0.DistributionLines",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemProofs",
+			"value": ""
+		},
+		{
+			"key": "Data.0.WorkfrontTemplate",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemReferences",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemDistributionLines",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CampaignItemWarehouseStockLines",
+			"value": ""
+		},
+		{
+			"key": "Data.0.valuationType",
+			"value": ""
+		},
+		{
+			"key": "Data.0.company",
+			"value": ""
+		},
+		{
+			"key": "cl_LoggedInTime",
+			"value": ""
+		},
+		{
+			"key": "FileName",
+			"value": ""
+		},
+		{
+			"key": "cl_FileName",
+			"value": ""
+		},
+		{
+			"key": "cl_ApplicationList",
+			"value": ""
+		},
+		{
+			"key": "Data.0.OrderLineID",
+			"value": ""
+		},
+		{
+			"key": "Data.0.SoHeaderId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.OrderLineReference",
+			"value": ""
+		},
+		{
+			"key": "Data.0.OrderLineTitle",
+			"value": ""
+		},
+		{
+			"key": "Data.0.Currency",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CreatedDate",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VATCode",
+			"value": ""
+		},
+		{
+			"key": "Data.0.UnitCost",
+			"value": ""
+		},
+		{
+			"key": "Data.0.Receipted",
+			"value": ""
+		},
+		{
+			"key": "Data.0.AccountManager",
+			"value": ""
+		},
+		{
+			"key": "Data.0.OrderID",
+			"value": ""
+		},
+		{
+			"key": "Data.0.OrderReference",
+			"value": ""
+		},
+		{
+			"key": "Data.0.Invoiced",
+			"value": ""
+		},
+		{
+			"key": "Data.0.InvoiceDate",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VATId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.LineAmountExclVAT",
+			"value": ""
+		},
+		{
+			"key": "Data.0.StatusName",
+			"value": ""
+		},
+		{
+			"key": "Data.0.InvoicePostedDate",
+			"value": ""
+		},
+		{
+			"key": "Data.0.IsConsolidated",
+			"value": ""
+		},
+		{
+			"key": "Data.0.UseSellPrice",
+			"value": ""
+		},
+		{
+			"key": "Data.0.PONumber",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CurrencySymbol",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ApplicationName",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CurrencyId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BusinessUnitVATRegistrationMappingId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BusinessUnitCode",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ApplicationGuid",
+			"value": ""
+		},
+		{
+			"key": "Data.0.OrderTitle",
+			"value": ""
+		},
+		{
+			"key": "Data.0.CustomerCode",
+			"value": ""
+		},
+		{
+			"key": "Data.0.IsPONumberUpdate",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.VATTypeId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.VATTypeGuid",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.CountryId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.VATCode",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.VATDescription",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.VATRate",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.DisplayOrder",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.RowVersion",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.BusinessUnitId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.Active",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.Hide",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.BusinessUnitVATRegistrationMappingId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.VATComments",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.BusinessUnitVATRegistrationMapping",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.PurchaseInvoices",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.0.BusinessUnit",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.VATTypeId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.VATTypeGuid",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.CountryId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.VATCode",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.VATDescription",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.VATRate",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.DisplayOrder",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.RowVersion",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.BusinessUnitId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.Active",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.Hide",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.BusinessUnitVATRegistrationMappingId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.VATComments",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.BusinessUnitVATRegistrationMapping",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.PurchaseInvoices",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.1.BusinessUnit",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.VATTypeId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.VATTypeGuid",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.CountryId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.VATCode",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.VATDescription",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.VATRate",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.DisplayOrder",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.RowVersion",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.BusinessUnitId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.Active",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.Hide",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.BusinessUnitVATRegistrationMappingId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.VATComments",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.BusinessUnitVATRegistrationMapping",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.PurchaseInvoices",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.2.BusinessUnit",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.VATTypeId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.VATTypeGuid",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.CountryId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.VATCode",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.VATDescription",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.VATRate",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.DisplayOrder",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.RowVersion",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.BusinessUnitId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.Active",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.Hide",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.BusinessUnitVATRegistrationMappingId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.VATComments",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.BusinessUnitVATRegistrationMapping",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.PurchaseInvoices",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.3.BusinessUnit",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.VATTypeId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.VATTypeGuid",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.CountryId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.VATCode",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.VATDescription",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.VATRate",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.DisplayOrder",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.RowVersion",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.BusinessUnitId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.Active",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.Hide",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.BusinessUnitVATRegistrationMappingId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.VATComments",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.BusinessUnitVATRegistrationMapping",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.PurchaseInvoices",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.4.BusinessUnit",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.VATTypeId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.VATTypeGuid",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.CountryId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.VATCode",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.VATDescription",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.VATRate",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.DisplayOrder",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.RowVersion",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.BusinessUnitId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.Active",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.Hide",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.BusinessUnitVATRegistrationMappingId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.VATComments",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.BusinessUnitVATRegistrationMapping",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.PurchaseInvoices",
+			"value": ""
+		},
+		{
+			"key": "Data.0.VatTypes.5.BusinessUnit",
+			"value": ""
+		},
+		{
+			"key": "Data.0.SOLineBusinessUnitVATRegistrationMappingId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ReceiptedQuantity",
+			"value": ""
+		},
+		{
+			"key": "Data.0.IsSplitInvoice",
+			"value": ""
+		},
+		{
+			"key": "Data.0.InvoicedQuantity",
+			"value": ""
+		},
+		{
+			"key": "Data.0.SOLineAvailableQuantity",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.CreatedByUserName",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.ModifiedByUserName",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.CustomerEntityName",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.CustomerName",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.CurrencyCode",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.CurrencySymbol",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.Customers",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.CustomerEntities",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPOId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPOGuid",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPONumber",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPOTitle",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.CurrencyId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPOValue",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.EndDate",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.CustomerId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.CustomerEntityId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.Active",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BusinessUnitVATRegistrationMappingId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.Currency",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.Customer",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.CustomerEntity",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.Campaign",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPoVATRegistrationMappingId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPoVATRegistrationMappingGuid",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPOId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMappingId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.Active",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.BlanketPOId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.BlanketPOGuid",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.BlanketPONumber",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.BlanketPOTitle",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.CurrencyId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.BlanketPOValue",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.EndDate",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.CustomerId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.CustomerEntityId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.Active",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.BusinessUnitVATRegistrationMappingId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.Currency",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.Customer",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.CustomerEntity",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.Campaign",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BlanketPO.BlanketPoVATRegistrationMappings",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.BusinessUnitVATRegistrationMappingId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.BusinessUnitVATRegistrationMappingGuid",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.BusinessUnitId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.TaxRepresentativeName",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.TaxRepresentativeAddress",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.AddressId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.Address",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.TaxRepresentativeContact",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.TaxRepresentativePhone",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.CountryId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.VATRegistrationNumber",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.IsDefault",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.Active",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.BusinessUnit",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.Country",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.Campaigns",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.VATTypes",
+			"value": ""
+		},
+		{
+			"key": "Data.0.BlanketPOList.0.BlanketPoVATRegistrationMappings.0.BusinessUnitVATRegistrationMapping.BlanketPoVATRegistrationMappings",
+			"value": ""
+		},
+		{
+			"key": "Data.0.InvoiceDetailsLists",
+			"value": ""
+		},
+		{
+			"key": "Data.0.SOLineGuid",
+			"value": ""
+		},
+		{
+			"key": "Data.0.loadBlanketPOInfo",
+			"value": ""
+		},
+		{
+			"key": "Data.0.index",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ShippingToAlpha2Code",
+			"value": ""
+		},
+		{
+			"key": "Data.0.DistributionSolines",
+			"value": ""
+		},
+		{
+			"key": "Data.0.IsAdditionalCost",
+			"value": ""
+		},
+		{
+			"key": "Data.0.AdditionalCostPercentage",
+			"value": ""
+		},
+		{
+			"key": "Data.0.AdditionalCostname",
+			"value": ""
+		},
+		{
+			"key": "Data.0.AdditionalCosts",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ParentSalesOrderLine",
+			"value": ""
+		},
+		{
+			"key": "Data.0.SellPriceIncldAdditional",
+			"value": ""
+		},
+		{
+			"key": "Data.0.HeaderCurrencyCode",
+			"value": ""
+		},
+		{
+			"key": "Data.0.HeaderCurrencyId",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ReceiptedDate",
+			"value": ""
+		},
+		{
+			"key": "Data.0.IsAuditProcessApplicable",
+			"value": ""
+		},
+		{
+			"key": "Data.0.UnitOfMeasureCode",
+			"value": ""
+		},
+		{
+			"key": "Data.0.Cancelled",
+			"value": ""
+		},
+		{
+			"key": "Data.0.IsInvoiceThresholdExist",
+			"value": ""
+		},
+		{
+			"key": "Data.0.InvoiceThresholdPercentage",
+			"value": ""
+		},
+		{
+			"key": "Data.0.ClaimList",
+			"value": ""
+		},
+		{
+			"key": "Data.0.EnvironmentalClaim",
+			"value": ""
+		},
+		{
+			"key": "Data.0.StockedValuationType",
+			"value": ""
+		},
+		{
+			"key": "Data.0.StockValuationTypeId",
+			"value": ""
+		},
+		{
+			"key": "1",
+			"value": ""
+		},
+		{
+			"key": "2",
+			"value": ""
+		},
+		{
+			"key": "0.InvoiceCheckListMasterId",
+			"value": ""
+		},
+		{
+			"key": "0.InvoiceCheckListMasterGuid",
+			"value": ""
+		},
+		{
+			"key": "0.InvoiceCheckListName",
+			"value": ""
+		},
+		{
+			"key": "0.IsDraftInvoiceDisplay",
+			"value": ""
+		},
+		{
+			"key": "0.IsMandatory",
+			"value": ""
+		},
+		{
+			"key": "0.IsZeroRated",
+			"value": ""
+		},
+		{
+			"key": "1.InvoiceCheckListMasterId",
+			"value": ""
+		},
+		{
+			"key": "1.InvoiceCheckListMasterGuid",
+			"value": ""
+		},
+		{
+			"key": "1.InvoiceCheckListName",
+			"value": ""
+		},
+		{
+			"key": "1.IsDraftInvoiceDisplay",
+			"value": ""
+		},
+		{
+			"key": "1.IsMandatory",
+			"value": ""
+		},
+		{
+			"key": "1.IsZeroRated",
+			"value": ""
+		},
+		{
+			"key": "1.Active",
+			"value": ""
+		},
+		{
+			"key": "1.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "1.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "1.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "1.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "2.InvoiceCheckListMasterId",
+			"value": ""
+		},
+		{
+			"key": "2.InvoiceCheckListMasterGuid",
+			"value": ""
+		},
+		{
+			"key": "2.InvoiceCheckListName",
+			"value": ""
+		},
+		{
+			"key": "2.IsDraftInvoiceDisplay",
+			"value": ""
+		},
+		{
+			"key": "2.IsMandatory",
+			"value": ""
+		},
+		{
+			"key": "2.IsZeroRated",
+			"value": ""
+		},
+		{
+			"key": "2.Active",
+			"value": ""
+		},
+		{
+			"key": "2.CreatedBy",
+			"value": ""
+		},
+		{
+			"key": "2.CreatedOn",
+			"value": ""
+		},
+		{
+			"key": "2.ModifiedBy",
+			"value": ""
+		},
+		{
+			"key": "2.ModifiedOn",
+			"value": ""
+		},
+		{
+			"key": "cl_SoHeaderId",
+			"value": ""
+		},
+		{
+			"key": "cl_InvoiceNumberValue",
+			"value": ""
+		},
+		{
+			"key": "cl_UserId",
+			"value": ""
+		}
+	]
+}
